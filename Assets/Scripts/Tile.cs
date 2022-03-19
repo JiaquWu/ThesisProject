@@ -2,14 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-}
-
 public enum TileState {
     NORMAL,
     OBSTACLE,
@@ -18,9 +10,7 @@ public enum TileState {
     CHARACTER_WITH_ANIMAL,
     DESTINATION
 }
-
-
-public class Tile
+public class Tile:MonoBehaviour
 {
     private int tileHealth;
     public int TileHealth => tileHealth;
@@ -33,6 +23,10 @@ public class Tile
 
     public void SetCoordinate(Vector2 co) {
         coordinate = co;
+    }
+
+    public void ChangeCurrentTileState(TileState state) {
+        currentTileState = state;
     }
 
     
