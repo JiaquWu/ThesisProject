@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     public static event Action UndoInputAction;
 
     private float inputTimer;
-    private float inputExecuteGap = 0.1f;
+    private float inputExecuteGap = 0.18f;
     // Start is called before the first frame update
     void Start()
     {
@@ -67,7 +67,6 @@ public class GameManager : MonoBehaviour
         }else if(Mathf.Abs(x) < Mathf.Abs(y)){
             dir = y > 0?Direction.UP:Direction.DOWN;
         }
-        Debug.Log(dir);
         MoveInputAction.Invoke(dir);
     }
     void DetectInteractInputs() {

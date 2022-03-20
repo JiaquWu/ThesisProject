@@ -72,6 +72,7 @@ public class TileManager : MonoBehaviour
     }
 
     void GenerateTileConfigs() {
+
         for (int i = 0; i < allTilesInCurrentLevel.Count; i++) {
             Tile tile = allTilesInCurrentLevel[i].GetComponent<Tile>();
             if(!tile) return;
@@ -130,11 +131,23 @@ public class TileManager : MonoBehaviour
 
         if(currentTile.CurrentTileState == TileState.CHARACTER_WITH_ANIMAL) {
             //格子融化一些
+            if(currentTile.ReduceTileHealth()) {
+                currentTile.ChangeCurrentTileState(TileState.NORMAL);
+            }else {
+                currentTile.ChangeCurrentTileState(TileState.BROKEN);
+            }
         }
-        //currentTile.ChangeCurrentTileState(TileState.NORMAL);
+        
         Debug.Log("处理地图逻辑之类的东西");
         GameObject go = GetNextTileByDir(currentTile, dir);
         if(go != null) {
+            Tile tile = go.GetComponent<Tile>();
+            if(!tile) return;
+            if(tile.CurrentTileState == TileState.NORMAL) {
+                MoveAction.Invoke(true,dir);
+            }else {
+                MoveAction.Invoke(false,dir);
+            }
             //go.GetComponent<Tile>().CurrentTileState
         }
         //MoveAction.Invoke(); 前提是有路可走
@@ -179,11 +192,12 @@ public class TileManager : MonoBehaviour
 
     void TileRotateCommand(Direction startDir, Direction targetDir) {
         currentDirection = targetDir;
+        Debug.Log("转向" + targetDir);
     }
     void TileMoveCommand(Direction dir) {
-
+        Debug.Log("走了一部" + currentTile.Coordinate);
     }
     void TileInteractCommand(InteractionType interaction) {
-
+        Debug.Log("交互了" + interaction);
     }
 }

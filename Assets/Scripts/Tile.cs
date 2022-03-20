@@ -8,7 +8,8 @@ public enum TileState {
     ANIMAL,
     CHARACTER,
     CHARACTER_WITH_ANIMAL,
-    DESTINATION
+    DESTINATION,
+    BROKEN
 }
 public class Tile:MonoBehaviour
 {
