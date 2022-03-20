@@ -13,6 +13,11 @@ public enum InteractionType {
     PICK_UP_ANIMALS,
     PUT_DOWN_ANIMALS
 }
+public enum ActionType {
+    ROTATE,
+    MOVE,
+    INTERACT
+}
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
@@ -30,6 +35,7 @@ public class GameManager : MonoBehaviour
 
     public static event Action<Direction> MoveInputAction;
     public static event Action InteractInputAction;
+    public static event Action UndoInputAction;
 
     private float inputTimer;
     private float inputExecuteGap = 0.1f;
@@ -47,6 +53,7 @@ public class GameManager : MonoBehaviour
     void DetectInputs() {
         DetectMoveInputs();
         DetectInteractInputs();
+        DetectUndoInputs();
     }
 
     void DetectMoveInputs() {
@@ -69,6 +76,11 @@ public class GameManager : MonoBehaviour
     void DetectInteractInputs() {
         if(Input.GetButtonDown("Jump")) {
             InteractInputAction.Invoke();
+        }
+    }
+    void DetectUndoInputs() {
+        if(Input.GetButtonDown("Undo")) {
+            UndoInputAction.Invoke();
         }
     }
 }

@@ -1,19 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CharacterActionType {
+    CHARACTER_ROTATE,
+    CHARACTER_MOVE,
+    CHARACTER_INTERACT
+}
 public class CharacterController : MonoBehaviour
 {
-    
+    public Stack<Command> characterCommands = new Stack<Command>();
     private void OnEnable() {
         TileManager.MoveAction += CharacterMove;
         TileManager.InteractAction += CharacterInteract;
         TileManager.RotateAction += CharacterRotate;
+        //TileManager.UndoAction += Undo;
     }
     private void OnDisable() {
         TileManager.MoveAction -= CharacterMove;
         TileManager.InteractAction -= CharacterInteract;
         TileManager.RotateAction -= CharacterRotate;
+        //TileManager.UndoAction -= Undo;
     }
     // Start is called before the first frame update
     void Start()
@@ -35,7 +43,25 @@ public class CharacterController : MonoBehaviour
 
     }
     void CharacterInteract(InteractionType interaction) {
-        Debug.Log("cc interact");
-
+        Debug.Log("cc interact"+interaction);
+        
     }
+    void AddCharacterCommand(CharacterActionType type) {
+        //new Command(()=>CharacterInteract(InteractionType.PICK_UP_ANIMALS));
+    }
+
 }
+// public class CharacterCommand:Command{
+//     private Action executeAction;
+//     private Action undoAction;
+//     public CharacterCommand(Action executeAction,Action undoAction) {
+//         this.executeAction = executeAction;
+//         this.undoAction = undoAction;
+//     }
+//     public override void Execute() {
+//         executeAction?.Invoke();
+//     }
+//     public override void Undo() {
+//         undoAction?.Invoke();
+//     }
+// }

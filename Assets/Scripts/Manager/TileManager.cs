@@ -20,6 +20,7 @@ public class TileManager : MonoBehaviour
     public static event Action<Direction,Direction> RotateAction;
     public static event Action<bool,Direction> MoveAction;
     public static event Action<InteractionType> InteractAction;
+    //public static event Action UndoAction;
     [SerializeField]
     private GameObject tile_Prefab;
     private LevelConfigSO currentLevelConfig;
@@ -30,12 +31,22 @@ public class TileManager : MonoBehaviour
 
     // Start is called before the first frame update
     private void OnEnable() {
-        GameManager.MoveInputAction += Move;
-        GameManager.InteractInputAction += Interact;
+        GameManager.MoveInputAction += TryToMove;
+        GameManager.InteractInputAction += TryToInteract;
+        GameManager.UndoInputAction += TryToUndo;
+
+        RotateAction += TileRotate;
+        MoveAction += TileMove;
+        InteractAction += TileInteract;
     }
     private void OnDisable() {
-        GameManager.MoveInputAction -= Move;
-        GameManager.InteractInputAction -= Interact;
+        GameManager.MoveInputAction -= TryToMove;
+        GameManager.InteractInputAction -= TryToInteract;
+        GameManager.UndoInputAction -= TryToUndo;
+
+        RotateAction -= TileRotate;
+        MoveAction -= TileMove;
+        InteractAction -= TileInteract;
     }
 
     void GenerateAllTiles() {
@@ -71,12 +82,11 @@ public class TileManager : MonoBehaviour
         }
         return null;
     }
-    void Move(Direction dir) {
+    void TryToMove(Direction dir) {
         
         //处理地图逻辑之类的东西
         if(currentDirection != dir) {
-            RotateAction.Invoke(currentDirection,dir);//玩家转向目标方向              
-            currentDirection = dir;
+            RotateAction.Invoke(currentDirection,dir);//玩家转向目标方向                         
             return;
         }
 
@@ -91,10 +101,36 @@ public class TileManager : MonoBehaviour
         }
         //MoveAction.Invoke(); 前提是有路可走
     }
-    void Interact() {
+    void TryToInteract() {
         Debug.Log("tilemanager interact");
         //如果前面能走 判断何种交互类型
         //InteractAction.Invoke()
 
     }
+
+    void TryToUndo() {
+        //UndoAction.Invoke();
+    }
+
+    void TileRotate(Direction startDir, Direction targetDir) {
+        currentDirection = targetDir;
+    }
+    void TileMove(bool canMove, Direction dir) {
+
+    }
+    void TileInteract(InteractionType interaction) {
+
+    }
+
 }
+// public class TileCommand:Command{
+//     public TileCommand() {
+
+//     }
+//     public override void Execute() {
+
+//     }
+//     public override void Undo() {
+        
+//     }
+// }
