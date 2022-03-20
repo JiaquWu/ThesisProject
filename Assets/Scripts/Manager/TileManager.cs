@@ -20,6 +20,7 @@ public class TileManager : MonoBehaviour
     public static event Action<Direction,Direction> RotateAction;
     public static event Action<bool,Direction> MoveAction;
     public static event Action<InteractionType> InteractAction;
+
     //public static event Action UndoAction;
     [SerializeField]
     private GameObject tile_Prefab;
@@ -33,7 +34,7 @@ public class TileManager : MonoBehaviour
     private void OnEnable() {
         GameManager.MoveInputAction += TryToMove;
         GameManager.InteractInputAction += TryToInteract;
-        GameManager.UndoInputAction += TryToUndo;
+        GameManager.UndoInputAction += TileUndo;
 
         RotateAction += TileRotate;
         MoveAction += TileMove;
@@ -42,7 +43,7 @@ public class TileManager : MonoBehaviour
     private void OnDisable() {
         GameManager.MoveInputAction -= TryToMove;
         GameManager.InteractInputAction -= TryToInteract;
-        GameManager.UndoInputAction -= TryToUndo;
+        GameManager.UndoInputAction -= TileUndo;
 
         RotateAction -= TileRotate;
         MoveAction -= TileMove;
@@ -104,12 +105,12 @@ public class TileManager : MonoBehaviour
     void TryToInteract() {
         Debug.Log("tilemanager interact");
         //如果前面能走 判断何种交互类型
-        //InteractAction.Invoke()
+        InteractAction.Invoke(InteractionType.PICK_UP_ANIMALS);
 
     }
 
-    void TryToUndo() {
-        //UndoAction.Invoke();
+    void TileUndo() {
+        Debug.Log("TileUndo");
     }
 
     void TileRotate(Direction startDir, Direction targetDir) {

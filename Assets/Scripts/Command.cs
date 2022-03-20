@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Command : MonoBehaviour,ICommand
+public class Command : ICommand
 {
     private Action executeAction;
     private Action undoAction;
