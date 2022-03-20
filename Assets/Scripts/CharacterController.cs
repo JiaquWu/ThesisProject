@@ -26,7 +26,8 @@ public class CharacterController : MonoBehaviour
     void CharacterMove(bool canMove, Direction dir) {
         if(canMove) {
             Command command = new Command(()=>CharacterMoveCommand(dir),()=>CharacterMoveCommand(Extensions.ReverseDirection(dir)));
-
+            characterCommands.Push(command);
+            command.Execute();
         }else {
             //如果不能移动，说明前面是障碍物或者没有路之类的，可能后期会添加小提示之类的？
         }

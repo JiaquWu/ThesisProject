@@ -21,6 +21,12 @@ public class Tile:MonoBehaviour
     public TileState CurrentTileState => currentTileState;
     // Start is called before the first frame update
 
+    public void SetTileHealth(int health) {
+        tileHealth = health;
+    }
+    public bool ReduceTileHealth() {
+        return --tileHealth > 0;
+    } 
     public void SetCoordinate(Vector2 co) {
         coordinate = co;
     }

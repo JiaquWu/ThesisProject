@@ -5,8 +5,10 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName ="Levels",fileName ="Level", order = 0)]
 public class LevelConfigSO : ScriptableObject {
+    public Vector2 offset;
+    public float scaleFactor;
     public List<TileInfo> tileInfos;
-
+    
 }
 
 [Serializable]

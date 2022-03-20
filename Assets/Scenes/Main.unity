@@ -247,6 +247,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1475492051 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2196111744077185045, guid: 1cbccf9f53854d8408c3e13e8c5aa5c4,
+    type: 3}
+  m_PrefabInstance: {fileID: 821898610646608439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1657866260
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +282,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29d818592fa20f409be7457117b7d57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile_Prefab: {fileID: 0}
+  tile_Prefab: {fileID: 1475492051}
+  currentLevelConfig: {fileID: 11400000, guid: 22b2a46d7f9d62346976bc3ad37a3d02, type: 2}
 --- !u!4 &1657866262
 Transform:
   m_ObjectHideFlags: 0
@@ -285,7 +292,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657866260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.04395647, y: -0.23656045, z: -10.737092}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

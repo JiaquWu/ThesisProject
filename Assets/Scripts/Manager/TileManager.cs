@@ -24,13 +24,14 @@ public class TileManager : MonoBehaviour
 
     [SerializeField]
     private GameObject tile_Prefab;
+    [SerializeField]
     private LevelConfigSO currentLevelConfig;
     private Tile currentTile;
-    private List<GameObject> allTilesInCurrentLevel;
+    private List<GameObject> allTilesInCurrentLevel = new List<GameObject>();
     private Direction currentDirection;
     public Direction CurrentDirection => currentDirection;
 
-    private void OnEnable() {
+        private void OnEnable() {
         GameManager.MoveInputAction += TryToMove;
         GameManager.InteractInputAction += TryToInteract;
         GameManager.UndoInputAction += TileUndo;
@@ -49,14 +50,51 @@ public class TileManager : MonoBehaviour
         InteractAction -= TileInteract;
     }
 
+    private void Start()
+    {
+        GenerateAllTiles();
+        GenerateTileConfigs();
+    }
+
     void GenerateAllTiles() {
-        if(currentLevelConfig.tileInfos.Count == 0) return;
+        if(currentLevelConfig?.tileInfos.Count == 0) return;
         allTilesInCurrentLevel.Clear();
         for (int i = 0; i < currentLevelConfig.tileInfos.Count; i++){
             GameObject go = Instantiate(tile_Prefab,gameObject.transform);
             allTilesInCurrentLevel.Add(go);
+            go.GetComponent<Tile>()?.ChangeCurrentTileState(currentLevelConfig.tileInfos[i].tileState);
+            go.GetComponent<Tile>()?.SetCoordinate(currentLevelConfig.tileInfos[i].coordinate);
+            go.GetComponent<Tile>()?.SetTileHealth(currentLevelConfig.tileInfos[i].tileHealth);
+            go.transform.position = (Vector2)(go.GetComponent<Tile>()?.Coordinate + currentLevelConfig.offset);
+            go.transform.localScale *= currentLevelConfig.scaleFactor; 
         }
 
+    }
+
+    void GenerateTileConfigs() {
+        for (int i = 0; i < allTilesInCurrentLevel.Count; i++) {
+            Tile tile = allTilesInCurrentLevel[i].GetComponent<Tile>();
+            if(!tile) return;
+            switch (tile.CurrentTileState)
+            {
+                case TileState.CHARACTER:
+                Debug.Log("让主角在这里");
+                currentTile = tile;
+                break;
+                case TileState.ANIMAL:
+                Debug.Log("让动物在这里");
+                break;
+                case TileState.OBSTACLE:
+                Debug.Log("让石头在这里");
+                break;
+                case TileState.DESTINATION:
+                Debug.Log("让终点在这里");
+                break;
+                case TileState.NORMAL:
+                Debug.Log(allTilesInCurrentLevel[i].GetComponent<Tile>()?.TileHealth);
+                break;
+            }
+        }
     }
     public GameObject GetNextTileByDir(Tile tile, Direction dir) {
         Vector2 vec = Vector2.zero;
