@@ -2,12 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum CharacterActionType {
-    CHARACTER_ROTATE,
-    CHARACTER_MOVE,
-    CHARACTER_INTERACT
-}
 public class CharacterController : MonoBehaviour
 {
     private Stack<Command> characterCommands = new Stack<Command>();
@@ -30,20 +24,23 @@ public class CharacterController : MonoBehaviour
         command.Execute();
     }
     void CharacterMove(bool canMove, Direction dir) {
-        
+        if(canMove) {
+            Command command = new Command(()=>CharacterMoveCommand(dir),()=>CharacterMoveCommand(Extensions.ReverseDirection(dir)));
 
+        }else {
+            //如果不能移动，说明前面是障碍物或者没有路之类的，可能后期会添加小提示之类的？
+        }
     }
-    void CharacterInteract(InteractionType interaction) {
-        InteractionType type = interaction == InteractionType.PICK_UP_ANIMALS ? InteractionType.PUT_DOWN_ANIMALS : InteractionType.PICK_UP_ANIMALS;
-        Command command = new Command(()=>CharacterInteractCommand(interaction),()=>CharacterInteractCommand(type));
+    void CharacterInteract(InteractionType interaction) { 
+        Command command = new Command(()=>CharacterInteractCommand(interaction),
+                                      ()=>CharacterInteractCommand(Extensions.ReverseInteractionType(interaction)));
         characterCommands.Push(command);
         command.Execute();
-        
     }
     void CharacterRotateCommand(Direction startDir, Direction targetDir) {
         //玩家从之前的朝向转向新的朝向
     }
-    void CharacterMoveCommand(bool canMove, Direction dir) {
+    void CharacterMoveCommand(Direction dir) {
         //处理角色动画之类的东西
         Debug.Log("处理角色动画之类的东西");
 
@@ -58,29 +55,6 @@ public class CharacterController : MonoBehaviour
            command.Undo();
         }
     }
-    // void AddCharacterCommand(CharacterActionType type) {
-    //     switch (type)
-    //     {
-    //         case CharacterActionType.CHARACTER_MOVE:
-    //         new Command(()=>CharacterMove());
-    //         break;
-
-    //     }
-    //     //new Command(()=>CharacterInteract(InteractionType.PICK_UP_ANIMALS));
-    // }
 
 }
-// public class CharacterCommand:Command{
-//     private Action executeAction;
-//     private Action undoAction;
-//     public CharacterCommand(Action executeAction,Action undoAction) {
-//         this.executeAction = executeAction;
-//         this.undoAction = undoAction;
-//     }
-//     public override void Execute() {
-//         executeAction?.Invoke();
-//     }
-//     public override void Undo() {
-//         undoAction?.Invoke();
-//     }
-// }
+

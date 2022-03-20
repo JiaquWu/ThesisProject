@@ -20,8 +20,8 @@ public class TileManager : MonoBehaviour
     public static event Action<Direction,Direction> RotateAction;
     public static event Action<bool,Direction> MoveAction;
     public static event Action<InteractionType> InteractAction;
+    private Stack<Command> tileCommands = new Stack<Command>();
 
-    //public static event Action UndoAction;
     [SerializeField]
     private GameObject tile_Prefab;
     private LevelConfigSO currentLevelConfig;
@@ -30,7 +30,6 @@ public class TileManager : MonoBehaviour
     private Direction currentDirection;
     public Direction CurrentDirection => currentDirection;
 
-    // Start is called before the first frame update
     private void OnEnable() {
         GameManager.MoveInputAction += TryToMove;
         GameManager.InteractInputAction += TryToInteract;
@@ -94,7 +93,7 @@ public class TileManager : MonoBehaviour
         if(currentTile.CurrentTileState == TileState.CHARACTER_WITH_ANIMAL) {
             //格子融化一些
         }
-        currentTile.ChangeCurrentTileState(TileState.NORMAL);
+        //currentTile.ChangeCurrentTileState(TileState.NORMAL);
         Debug.Log("处理地图逻辑之类的东西");
         GameObject go = GetNextTileByDir(currentTile, dir);
         if(go != null) {
@@ -110,28 +109,43 @@ public class TileManager : MonoBehaviour
     }
 
     void TileUndo() {
-        Debug.Log("TileUndo");
+        if(tileCommands.Count > 0) {
+            Command command = tileCommands.Pop();
+            command.Undo();
+        }
     }
 
     void TileRotate(Direction startDir, Direction targetDir) {
-        currentDirection = targetDir;
+        Command command = new Command(()=>TileRotateCommand(startDir,targetDir),()=>TileRotateCommand(targetDir,startDir));
+        tileCommands.Push(command);
+        command.Execute();
+        
     }
     void TileMove(bool canMove, Direction dir) {
-
+        if(canMove) {
+            Command command = new Command(()=>TileMoveCommand(dir),()=>TileMoveCommand(Extensions.ReverseDirection(dir)));
+            tileCommands.Push(command);
+            command.Execute();
+        }else {
+            //
+        }
     }
     void TileInteract(InteractionType interaction) {
-
+        Command command = new Command(()=>TileInteractCommand(interaction),()=>TileInteractCommand(Extensions.ReverseInteractionType(interaction)));
+        tileCommands.Push(command);
+        command.Execute();
+    }
+    void TileUndoCommand() {
+        Debug.Log("TileUndo");
     }
 
+    void TileRotateCommand(Direction startDir, Direction targetDir) {
+        currentDirection = targetDir;
+    }
+    void TileMoveCommand(Direction dir) {
+
+    }
+    void TileInteractCommand(InteractionType interaction) {
+
+    }
 }
-// public class TileCommand:Command{
-//     public TileCommand() {
-
-//     }
-//     public override void Execute() {
-
-//     }
-//     public override void Undo() {
-        
-//     }
-// }

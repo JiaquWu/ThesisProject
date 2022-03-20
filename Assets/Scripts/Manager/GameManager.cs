@@ -10,14 +10,11 @@ public enum Direction {
     RIGHT
 }
 public enum InteractionType {
+    NONE,
     PICK_UP_ANIMALS,
     PUT_DOWN_ANIMALS
 }
-public enum ActionType {
-    ROTATE,
-    MOVE,
-    INTERACT
-}
+
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
