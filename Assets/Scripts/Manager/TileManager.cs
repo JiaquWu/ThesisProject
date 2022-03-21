@@ -162,7 +162,7 @@ public class TileManager : SingletonManager<TileManager>
     }
     void TileMove(bool canMove, Direction dir) {
         if(canMove) {
-            Command command = new Command(()=>TileMoveCommand(dir),()=>TileMoveCommand(Utilitys.ReverseDirection(dir)));
+            Command command = new Command(()=>TileMoveCommand(dir),()=>TileMoveCommand(Utilities.ReverseDirection(dir)));
             tileCommands.Push(command);
             command.Execute();
         }else {
@@ -170,7 +170,7 @@ public class TileManager : SingletonManager<TileManager>
         }
     }
     void TileInteract(InteractionType interaction) {
-        Command command = new Command(()=>TileInteractCommand(interaction),()=>TileInteractCommand(Utilitys.ReverseInteractionType(interaction)));
+        Command command = new Command(()=>TileInteractCommand(interaction),()=>TileInteractCommand(Utilities.ReverseInteractionType(interaction)));
         tileCommands.Push(command);
         command.Execute();
     }

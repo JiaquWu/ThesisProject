@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelObject : MonoBehaviour
+public interface ILevelObject 
 {
-    public virtual bool IsPassable() {
-        return false;
-    }
+    void OnPlayerEnter(GameObject player,ref Command command);
+    bool IsPassable(Direction dir);
 }

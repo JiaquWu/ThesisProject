@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public static class Utilitys {
+public static class Utilities {
     public static Direction ReverseDirection(Direction dir) {
         switch (dir)
         {
@@ -41,6 +41,10 @@ public static class Utilitys {
             return InteractionType.PICK_UP_ANIMALS;
         }
         return InteractionType.NONE;
+    }
+
+    public static Vector3Int Vector3ToVector3Int(Vector3 vec) {
+        return new Vector3Int(Mathf.RoundToInt(vec.x),Mathf.RoundToInt(vec.y),Mathf.RoundToInt(vec.z));
     }
     
 

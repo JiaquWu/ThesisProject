@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,7 +42,7 @@ public class InputManager : SingletonManager<InputManager>
             dir = y > 0?Direction.UP:Direction.DOWN;
         }
         MoveInputAction.Invoke(dir);
-
+        
         inputTimer = 0;
     }
     void DetectInteractInputs() {
