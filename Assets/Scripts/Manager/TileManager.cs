@@ -21,18 +21,18 @@ public class TileManager : SingletonManager<TileManager>
     public Direction CurrentDirection => currentDirection;
 
         private void OnEnable() {
-        GameManager.MoveInputAction += TryToMove;
-        GameManager.InteractInputAction += TryToInteract;
-        GameManager.UndoInputAction += TileUndo;
+        InputManager.MoveInputAction += TryToMove;
+        InputManager.InteractInputAction += TryToInteract;
+        InputManager.UndoInputAction += TileUndo;
 
         RotateAction += TileRotate;
         MoveAction += TileMove;
         InteractAction += TileInteract;
     }
     private void OnDisable() {
-        GameManager.MoveInputAction -= TryToMove;
-        GameManager.InteractInputAction -= TryToInteract;
-        GameManager.UndoInputAction -= TileUndo;
+        InputManager.MoveInputAction -= TryToMove;
+        InputManager.InteractInputAction -= TryToInteract;
+        InputManager.UndoInputAction -= TileUndo;
 
         RotateAction -= TileRotate;
         MoveAction -= TileMove;
