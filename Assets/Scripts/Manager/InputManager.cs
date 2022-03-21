@@ -30,8 +30,7 @@ public class InputManager : SingletonManager<InputManager>
     }
     void DetectMoveInputs() {
         inputTimer += Time.deltaTime;
-        if(inputTimer < inputExecuteGap) return;
-        inputTimer = 0;
+        if(inputTimer < inputExecuteGap) return;      
 
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
@@ -43,6 +42,8 @@ public class InputManager : SingletonManager<InputManager>
             dir = y > 0?Direction.UP:Direction.DOWN;
         }
         MoveInputAction.Invoke(dir);
+
+        inputTimer = 0;
     }
     void DetectInteractInputs() {
         if(Input.GetButtonDown("Jump")) {
