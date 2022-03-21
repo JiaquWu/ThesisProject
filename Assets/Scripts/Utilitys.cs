@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public static class Extensions {
+public static class Utilitys {
     public static Direction ReverseDirection(Direction dir) {
         switch (dir)
         {
@@ -19,6 +19,20 @@ public static class Extensions {
         return Direction.NONE;
     }
 
+    public static Vector3 DirectionToVector(Direction dir) {
+        switch (dir) {
+            case Direction.UP:
+            return Vector3.up;
+            case Direction.DOWN:
+            return Vector3.down;
+            case Direction.LEFT:
+            return Vector3.left;
+            case Direction.RIGHT:
+            return Vector3.right;
+        }
+        return Vector3.zero;
+    }
+
     public static InteractionType ReverseInteractionType(InteractionType type) {
         switch(type) {
             case InteractionType.PICK_UP_ANIMALS:
@@ -29,5 +43,6 @@ public static class Extensions {
         return InteractionType.NONE;
     }
     
+
 
 }

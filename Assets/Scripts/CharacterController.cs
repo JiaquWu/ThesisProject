@@ -4,41 +4,60 @@ using System.Collections.Generic;
 using UnityEngine;
 public class CharacterController : MonoBehaviour
 {
+    public Direction CharacterDirection{get;private set;}
     private Stack<Command> characterCommands = new Stack<Command>();
+
+    private void Awake(){
+        CharacterDirection = Direction.UP;
+    }
     private void OnEnable() {
-        TileManager.MoveAction += CharacterMove;
-        TileManager.InteractAction += CharacterInteract;
-        TileManager.RotateAction += CharacterRotate;
+
+        InputManager.MoveInputAction += OnCharacterMoveInput;
+        // TileManager.MoveAction += CharacterMove;
+        // TileManager.InteractAction += CharacterInteract;
+        // TileManager.RotateAction += CharacterRotate;
         InputManager.UndoInputAction += CharacterUndoCommand;
     }
     private void OnDisable() {
-        TileManager.MoveAction -= CharacterMove;
-        TileManager.InteractAction -= CharacterInteract;
-        TileManager.RotateAction -= CharacterRotate;
+        // TileManager.MoveAction -= CharacterMove;
+        // TileManager.InteractAction -= CharacterInteract;
+        // TileManager.RotateAction -= CharacterRotate;
         InputManager.UndoInputAction -= CharacterUndoCommand;
     }
 
     void CharacterRotate(Direction startDir, Direction targetDir) {
-        Command command = new Command(()=>CharacterRotateCommand(startDir,targetDir),()=>CharacterRotateCommand(targetDir,startDir));
-        characterCommands.Push(command);
-        command.Execute();
+        
     }
-    void CharacterMove(bool canMove, Direction dir) {
-        if(canMove) {
-            Command command = new Command(()=>CharacterMoveCommand(dir),()=>CharacterMoveCommand(Extensions.ReverseDirection(dir)));
-            characterCommands.Push(command);
-            command.Execute();
+    void OnCharacterMoveInput(Direction dir) {
+        //
+        if(dir == CharacterDirection) {
+            //移动
+            // Command command = new Command(()=>CharacterMoveCommand(dir),()=>CharacterMoveCommand(Utilitys.ReverseDirection(dir)));
+            // characterCommands.Push(command);
+            // command.Execute();
+
+
+            Command command = new Command();
+            command.executeAction += ()=>CharacterMoveCommand(dir);
+            command.undoAction += ()=>CharacterMoveCommand(Utilitys.ReverseDirection(dir));
+            //获得目的地位置上的东西的引用,绑定execute和undo
+            // Ground ground;
+            // ground.OnPlayerEnter(gameObject,ref command);
+            LevelManager.Instance.commandHandler.AddCommand(command); 
         }else {
-            //如果不能移动，说明前面是障碍物或者没有路之类的，可能后期会添加小提示之类的？
+            Command command = new Command(()=>CharacterRotateCommand(dir),()=>CharacterRotateCommand(CharacterDirection));
+            LevelManager.Instance.commandHandler.AddCommand(command);  
+            //转向
         }
+        
     }
     void CharacterInteract(InteractionType interaction) { 
         Command command = new Command(()=>CharacterInteractCommand(interaction),
-                                      ()=>CharacterInteractCommand(Extensions.ReverseInteractionType(interaction)));
+                                      ()=>CharacterInteractCommand(Utilitys.ReverseInteractionType(interaction)));
         characterCommands.Push(command);
         command.Execute();
     }
-    void CharacterRotateCommand(Direction startDir, Direction targetDir) {
+    void CharacterRotateCommand(Direction targetDir) {
         //玩家从之前的朝向转向新的朝向
     }
     void CharacterMoveCommand(Direction dir) {
@@ -55,6 +74,17 @@ public class CharacterController : MonoBehaviour
            Command command = characterCommands.Pop();
            command.Undo();
         }
+    }
+
+    bool IsPassable(Direction dir) {
+        Vector3 vec = transform.position + Utilitys.DirectionToVector(dir);
+        List<GameObject> objects = LevelManager.GetObjectsOn(vec);
+        if(objects.Count > 0) {
+            for (int i = 0; i < objects.Count; i++) {
+                if(!objects[i].GetComponent<LevelObject>().IsPassable()) return false;
+            }
+        }
+        return true;
     }
 
 }
