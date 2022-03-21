@@ -15,21 +15,8 @@ public enum InteractionType {
     PUT_DOWN_ANIMALS
 }
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonManager<GameManager>
 {
-    private static GameManager instance;
-    public static GameManager Instance {
-        get{
-            if(!instance) {
-                instance = FindObjectOfType<GameManager>();
-                if(!instance) {
-                    Debug.LogError("There is no GameManager object in any of the currently loaded scenes");
-                }
-            }
-            return instance;
-        }
-    }
-
     public static event Action<Direction> MoveInputAction;
     public static event Action InteractInputAction;
     public static event Action UndoInputAction;

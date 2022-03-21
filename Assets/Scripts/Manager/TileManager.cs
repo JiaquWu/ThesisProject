@@ -1,22 +1,11 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileManager : MonoBehaviour
+public class TileManager : SingletonManager<TileManager>
 {
-    private static TileManager instance;
-    public static TileManager Instance {
-        get{
-            if(!instance) {
-                instance = FindObjectOfType<TileManager>();
-                if(!instance) {
-                    Debug.LogError("There is no GameManager object in any of the currently loaded scenes");
-                }
-            }
-            return instance;
-        }
-    }
+
     public static event Action<Direction,Direction> RotateAction;
     public static event Action<bool,Direction> MoveAction;
     public static event Action<InteractionType> InteractAction;
@@ -145,8 +134,7 @@ public class TileManager : MonoBehaviour
             if(!tile) return;
             if(tile.CurrentTileState == TileState.NORMAL) {
                 MoveAction.Invoke(true,dir);
-            }else {
-                MoveAction.Invoke(false,dir);
+                
             }
             //go.GetComponent<Tile>().CurrentTileState
         }
