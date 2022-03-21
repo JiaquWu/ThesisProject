@@ -9,13 +9,13 @@ public class CharacterController : MonoBehaviour
         TileManager.MoveAction += CharacterMove;
         TileManager.InteractAction += CharacterInteract;
         TileManager.RotateAction += CharacterRotate;
-        GameManager.UndoInputAction += CharacterUndoCommand;
+        InputManager.UndoInputAction += CharacterUndoCommand;
     }
     private void OnDisable() {
         TileManager.MoveAction -= CharacterMove;
         TileManager.InteractAction -= CharacterInteract;
         TileManager.RotateAction -= CharacterRotate;
-        GameManager.UndoInputAction -= CharacterUndoCommand;
+        InputManager.UndoInputAction -= CharacterUndoCommand;
     }
 
     void CharacterRotate(Direction startDir, Direction targetDir) {

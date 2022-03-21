@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SingletonManager<T> : MonoBehaviour where T:Component
+public class SingletonManager<T> : MonoBehaviour 
+                        where T:Component
 {
     private static T instance;
     public static T Instance {
@@ -10,7 +11,9 @@ public class SingletonManager<T> : MonoBehaviour where T:Component
             if(!instance) {
                 instance = FindObjectOfType<T>();
                 if(!instance) {
-                    Debug.LogError("There is no GameManager object in any of the currently loaded scenes");
+                    GameObject go = new GameObject();
+                    instance = go.AddComponent<T>();
+                    Debug.LogError(string.Format("There was no {0} object in any of the currently loaded scenes",instance));
                 }
             }
             return instance;
