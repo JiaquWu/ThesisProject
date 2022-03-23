@@ -24,7 +24,7 @@ public class @IA_Main : IInputActionCollection, IDisposable
                     ""id"": ""0b9cba3c-2c0e-4401-ac6b-fa5ab4de8b27"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""MoveUp"",

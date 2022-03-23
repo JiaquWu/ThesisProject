@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator ProcessMoveInput()
     {
         OnCharacterMoveInput(moveInputPool[moveInputPool.Count - 1]);
-        if(moveInputPool.Count <= 1)    yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(moveInputPool.Count <= 1?0.5f:0.1f);
 
         while (moveInputPool.Count > 0)
         {
