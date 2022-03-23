@@ -21,7 +21,7 @@ public class InputManager : SingletonManager<InputManager>
     // Update is called once per frame
     void Update()
     {
-        DetectInputs();
+       // DetectInputs();
     }
     void DetectInputs() {
         DetectMoveInputs();
@@ -31,7 +31,7 @@ public class InputManager : SingletonManager<InputManager>
     void DetectMoveInputs() {
         inputTimer += Time.deltaTime;
         if(inputTimer < inputExecuteGap) return;      
-
+        
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         if(new Vector2(x,y).magnitude <= float.Epsilon) return;

@@ -1,33 +1,146 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
+    private IA_Main mainInputAction;
     public Direction CharacterDirection{get;private set;}
     private Stack<Command> characterCommands = new Stack<Command>();
 
+    private List<Direction> moveInputPool;
+    private Coroutine processMoveInputCoroutine;
+
     private void Awake(){
         CharacterDirection = Direction.UP;
+        moveInputPool=new List<Direction>();
     }
     private void OnEnable() {
+        mainInputAction = new IA_Main();
+        mainInputAction.Enable();
+        mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
+        mainInputAction.Gameplay.MoveUp.performed += OnMoveUpPerformed;
+        mainInputAction.Gameplay.MoveLeft.performed += OnMoveLeftPerformed;
+        mainInputAction.Gameplay.MoveDown.performed += OnMoveDownPerformed;
+        mainInputAction.Gameplay.MoveRight.performed += OnMoveRightPerformed;
 
-        InputManager.MoveInputAction += OnCharacterMoveInput;
+
+        // InputManager.MoveInputAction += OnCharacterMoveInput;
         // TileManager.MoveAction += CharacterMove;
         // TileManager.InteractAction += CharacterInteract;
         // TileManager.RotateAction += CharacterRotate;
-        InputManager.UndoInputAction += CharacterUndoCommand;
+        // InputManager.UndoInputAction += CharacterUndoCommand;
     }
     private void OnDisable() {
-        InputManager.MoveInputAction -= OnCharacterMoveInput;
+        mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
+        mainInputAction.Gameplay.MoveUp.performed -= OnMoveUpPerformed;
+        mainInputAction.Gameplay.MoveLeft.performed -= OnMoveLeftPerformed;
+        mainInputAction.Gameplay.MoveDown.performed -= OnMoveDownPerformed;
+        mainInputAction.Gameplay.MoveRight.performed -= OnMoveRightPerformed;
+
+        mainInputAction.Disable();
+
+        //InputManager.MoveInputAction -= OnCharacterMoveInput;
         // TileManager.MoveAction -= CharacterMove;
         // TileManager.InteractAction -= CharacterInteract;
         // TileManager.RotateAction -= CharacterRotate;
-        InputManager.UndoInputAction -= CharacterUndoCommand;
+        //InputManager.UndoInputAction -= CharacterUndoCommand;
     }
 
-    void CharacterRotate(Direction startDir, Direction targetDir) {
-        
+    void OnUndoPerformed(InputAction.CallbackContext context)
+    {
+        Debug.Log(context.ReadValueAsButton());
+        CharacterUndoCommand();          
+    }
+    
+    IEnumerator ProcessMoveInput()
+    {
+        OnCharacterMoveInput(moveInputPool[moveInputPool.Count - 1]);
+        if(moveInputPool.Count <= 1)    yield return new WaitForSeconds(0.5f);
+
+        while (moveInputPool.Count > 0)
+        {
+            OnCharacterMoveInput(moveInputPool[moveInputPool.Count - 1]);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    void OnMoveUpPerformed(InputAction.CallbackContext context)
+    {         
+        if (context.ReadValueAsButton())
+        {
+            // 按下
+            if (!moveInputPool.Contains(Direction.UP))
+            {
+                moveInputPool.Add(Direction.UP);
+                //瞬间执行一次
+                if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
+                processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
+            }
+        } 
+        else
+        {
+            // 抬起
+            moveInputPool.Remove(Direction.UP);
+        }
+    }
+    void OnMoveLeftPerformed(InputAction.CallbackContext context)
+    {     
+        if (context.ReadValueAsButton())
+        {
+            // 按下
+            if (!moveInputPool.Contains(Direction.LEFT))
+            {
+                moveInputPool.Add(Direction.LEFT);
+                //瞬间执行一次
+                if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
+                processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
+            }
+        } 
+        else
+        {
+            // 抬起
+            moveInputPool.Remove(Direction.LEFT);
+        }    
+    }
+    void OnMoveDownPerformed(InputAction.CallbackContext context)
+    {        
+        if (context.ReadValueAsButton())
+        {
+            // 按下
+            if (!moveInputPool.Contains(Direction.DOWN))
+            {
+                moveInputPool.Add(Direction.DOWN);
+                //瞬间执行一次
+                if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
+                processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
+            }
+        } 
+        else
+        {
+            // 抬起
+            moveInputPool.Remove(Direction.DOWN);
+        }    
+    }
+    void OnMoveRightPerformed(InputAction.CallbackContext context)
+    {         
+         if (context.ReadValueAsButton())
+        {
+            // 按下
+            if (!moveInputPool.Contains(Direction.RIGHT))
+            {
+                moveInputPool.Add(Direction.RIGHT);
+                //瞬间执行一次
+                if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
+                processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
+            }
+        } 
+        else
+        {
+            // 抬起
+            moveInputPool.Remove(Direction.RIGHT);
+        }  
     }
     void OnCharacterMoveInput(Direction dir) {
         //
@@ -48,10 +161,8 @@ public class PlayerController : MonoBehaviour
         }else {
             Command command = new Command(()=>CharacterRotateCommand(dir),()=>CharacterRotateCommand(CharacterDirection));
             LevelManager.Instance.commandHandler.AddCommand(command);  
-            //转向
-            
-        }
-        
+            //转向        
+        }  
     }
     void CharacterInteract(InteractionType interaction) { 
         Command command = new Command(()=>CharacterInteractCommand(interaction),
