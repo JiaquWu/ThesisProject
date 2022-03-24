@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     private IA_Main mainInputAction;
     public Direction CharacterDirection{get;private set;}
+    public Animal AnimalCharacterHold{get;private set;}
     private Stack<Command> characterCommands = new Stack<Command>();
 
     private List<Direction> moveInputPool;
@@ -122,11 +123,9 @@ public class PlayerController : MonoBehaviour
         }  
     }
     void OnInteractPerformed(InputAction.CallbackContext context) {
-        //交互这件事情需要在输入之后检查能否执行,所以需要OnCharacterInteractInput这个额外的方法
-        OnCharacterInteractInput(InteractionType.NONE);
+        OnCharacterInteractInput();
     }
     void OnUndoPerformed(InputAction.CallbackContext context) {
-        //因为undo这个操作不需要很多检查能否执行的操作,所以不需要OnCharacterUndoInput这个方法
         Debug.Log(context.ReadValueAsButton());
         CharacterUndoCommand();          
     }
@@ -152,11 +151,16 @@ public class PlayerController : MonoBehaviour
             //转向        
         }  
     }
-    void OnCharacterInteractInput(InteractionType interaction) { 
-        Command command = new Command(()=>CharacterInteractCommand(interaction),
-                                      ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction)));
-        characterCommands.Push(command);
-        command.Execute();
+    void OnCharacterInteractInput() { 
+        //InteractionType interaction = InteractionType.NONE;
+        //这里要判断能不能交互,以及交互是什么类型的
+        if(!IsInteractable()) return;
+        List<ILevelObject> objects = GetObjectsOn((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
+
+        Command command = new Command();
+        //()=>CharacterInteractCommand(interaction),()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction))
+        
+        LevelManager.Instance.commandHandler.AddCommand(command);
     }
     void CharacterRotateCommand(Direction targetDir) {
         //玩家从之前的朝向转向新的朝向
@@ -192,8 +196,18 @@ public class PlayerController : MonoBehaviour
     bool IsPassable(Direction dir) {
         List<ILevelObject> objects = GetObjectsOn(Utilities.DirectionToVector(dir) + transform.position);
         if(objects.Count == 0) return false;
-        foreach (var item in objects) {
+        foreach (var item in objects) {//如果有一个不能通关那就不能通过
            if(!item.IsPassable(dir)) return false;
+        }
+        Debug.Log(objects.Count);
+        return true;
+    }
+
+    bool IsInteractable() {
+        List<ILevelObject> objects = GetObjectsOn(Utilities.DirectionToVector(CharacterDirection) + transform.position);
+        if(objects.Count == 0) return false;
+        foreach (var item in objects) {//如果有一个不能通关那就不能通过
+           if(!item.IsInteractable(gameObject)) return false;
         }
         Debug.Log(objects.Count);
         return true;
