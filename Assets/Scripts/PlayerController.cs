@@ -20,13 +20,15 @@ public class PlayerController : MonoBehaviour
     private void OnEnable() {
         mainInputAction = new IA_Main();
         mainInputAction.Enable();
-        mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
+        
+        
         mainInputAction.Gameplay.MoveUp.performed += OnMoveUpPerformed;
         mainInputAction.Gameplay.MoveLeft.performed += OnMoveLeftPerformed;
         mainInputAction.Gameplay.MoveDown.performed += OnMoveDownPerformed;
         mainInputAction.Gameplay.MoveRight.performed += OnMoveRightPerformed;
 
-
+        mainInputAction.Gameplay.Interact.performed += OnInteractPerformed;
+        mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
         // InputManager.MoveInputAction += OnCharacterMoveInput;
         // TileManager.MoveAction += CharacterMove;
         // TileManager.InteractAction += CharacterInteract;
@@ -34,12 +36,15 @@ public class PlayerController : MonoBehaviour
         // InputManager.UndoInputAction += CharacterUndoCommand;
     }
     private void OnDisable() {
-        mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
+        
+        
         mainInputAction.Gameplay.MoveUp.performed -= OnMoveUpPerformed;
         mainInputAction.Gameplay.MoveLeft.performed -= OnMoveLeftPerformed;
         mainInputAction.Gameplay.MoveDown.performed -= OnMoveDownPerformed;
         mainInputAction.Gameplay.MoveRight.performed -= OnMoveRightPerformed;
 
+        mainInputAction.Gameplay.Interact.performed -= OnInteractPerformed;
+        mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
         mainInputAction.Disable();
 
         //InputManager.MoveInputAction -= OnCharacterMoveInput;
@@ -48,99 +53,82 @@ public class PlayerController : MonoBehaviour
         // TileManager.RotateAction -= CharacterRotate;
         //InputManager.UndoInputAction -= CharacterUndoCommand;
     }
-
-    void OnUndoPerformed(InputAction.CallbackContext context)
-    {
-        Debug.Log(context.ReadValueAsButton());
-        CharacterUndoCommand();          
-    }
     
-    IEnumerator ProcessMoveInput()
-    {
+    
+    IEnumerator ProcessMoveInput() {
         OnCharacterMoveInput(moveInputPool[moveInputPool.Count - 1]);
         yield return new WaitForSeconds(moveInputPool.Count <= 1?0.5f:0.1f);
 
-        while (moveInputPool.Count > 0)
-        {
+        while (moveInputPool.Count > 0) {
             OnCharacterMoveInput(moveInputPool[moveInputPool.Count - 1]);
             yield return new WaitForSeconds(0.1f);
         }
     }
-    void OnMoveUpPerformed(InputAction.CallbackContext context)
-    {         
-        if (context.ReadValueAsButton())
-        {
+    void OnMoveUpPerformed(InputAction.CallbackContext context) {         
+        if (context.ReadValueAsButton()) {
             // 按下
-            if (!moveInputPool.Contains(Direction.UP))
-            {
+            if (!moveInputPool.Contains(Direction.UP)) {
                 moveInputPool.Add(Direction.UP);
                 //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
-        } 
-        else
-        {
+        }else {
             // 抬起
             moveInputPool.Remove(Direction.UP);
         }
     }
-    void OnMoveLeftPerformed(InputAction.CallbackContext context)
-    {     
-        if (context.ReadValueAsButton())
-        {
+    void OnMoveLeftPerformed(InputAction.CallbackContext context) {     
+        if (context.ReadValueAsButton()) {
             // 按下
-            if (!moveInputPool.Contains(Direction.LEFT))
-            {
+            if (!moveInputPool.Contains(Direction.LEFT)) {
                 moveInputPool.Add(Direction.LEFT);
                 //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
-        } 
-        else
-        {
+        }else {
             // 抬起
             moveInputPool.Remove(Direction.LEFT);
         }    
     }
-    void OnMoveDownPerformed(InputAction.CallbackContext context)
-    {        
-        if (context.ReadValueAsButton())
-        {
+    void OnMoveDownPerformed(InputAction.CallbackContext context) {        
+        if (context.ReadValueAsButton()) {
             // 按下
-            if (!moveInputPool.Contains(Direction.DOWN))
-            {
+            if (!moveInputPool.Contains(Direction.DOWN)) {
                 moveInputPool.Add(Direction.DOWN);
                 //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
         } 
-        else
-        {
+        else {
             // 抬起
             moveInputPool.Remove(Direction.DOWN);
         }    
     }
-    void OnMoveRightPerformed(InputAction.CallbackContext context)
-    {         
-         if (context.ReadValueAsButton())
-        {
+    void OnMoveRightPerformed(InputAction.CallbackContext context) {         
+        if (context.ReadValueAsButton()) {
             // 按下
-            if (!moveInputPool.Contains(Direction.RIGHT))
-            {
+            if (!moveInputPool.Contains(Direction.RIGHT)) {
                 moveInputPool.Add(Direction.RIGHT);
                 //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
-        } 
-        else
-        {
+        }else {
             // 抬起
             moveInputPool.Remove(Direction.RIGHT);
         }  
+    }
+    void OnInteractPerformed(InputAction.CallbackContext context) {
+        //交互这件事情需要在输入之后检查能否执行,所以需要OnCharacterInteractInput这个额外的方法
+        OnCharacterInteractInput(InteractionType.NONE);
+    }
+    void OnUndoPerformed(InputAction.CallbackContext context) {
+        //因为undo这个操作不需要很多检查能否执行的操作,所以不需要OnCharacterUndoInput这个方法
+        Debug.Log(context.ReadValueAsButton());
+        CharacterUndoCommand();          
     }
     void OnCharacterMoveInput(Direction dir) {
         //
@@ -164,7 +152,7 @@ public class PlayerController : MonoBehaviour
             //转向        
         }  
     }
-    void CharacterInteract(InteractionType interaction) { 
+    void OnCharacterInteractInput(InteractionType interaction) { 
         Command command = new Command(()=>CharacterInteractCommand(interaction),
                                       ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction)));
         characterCommands.Push(command);
@@ -174,12 +162,12 @@ public class PlayerController : MonoBehaviour
         //玩家从之前的朝向转向新的朝向
         CharacterDirection = targetDir;
         Debug.Log("玩家新的朝向是" + CharacterDirection);
+        //改变方向
     }
     void CharacterMoveCommand(Direction dir) {
         //玩家说了算
         Debug.Log("处理角色动画之类的东西");
         transform.position = Utilities.Vector3ToVector3Int(Utilities.DirectionToVector(dir) + transform.position);
-
     }
     void CharacterInteractCommand(InteractionType interaction) {
         Debug.Log("cc interact"+interaction);

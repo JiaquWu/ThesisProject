@@ -44,6 +44,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "1cb814a2-8ffa-4839-94c8-4f926c2f8f29",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -93,6 +101,17 @@
                 },
                 {
                     "name": "",
+                    "id": "866120c2-07f6-4d01-abdc-714721fe7877",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f0b1156a-7a7e-4844-919c-2afa7230e02d",
                     "path": "<Keyboard>/a",
                     "interactions": "",
@@ -106,6 +125,17 @@
                     "name": "",
                     "id": "e7f5c709-1396-438b-8cd1-ad287173fab9",
                     "path": "<XInputController>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2bcde948-7051-42b5-87d7-94c9eaf22e68",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -137,6 +167,17 @@
                 },
                 {
                     "name": "",
+                    "id": "b927a110-c73d-4697-b8ac-8aba5e5b2a5d",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1b51c9d5-8792-48d5-b298-1908972a5c36",
                     "path": "<Keyboard>/d",
                     "interactions": "",
@@ -154,6 +195,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "MoveRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "47f5b54f-d84b-4a5e-b212-b42f8853d4fc",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d3d96310-ee74-4b84-9ec7-825a2eb4fab4",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c9dc3017-c77a-488f-8ead-b606bfff499d",
+                    "path": "<XInputController>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
