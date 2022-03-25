@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     private IA_Main mainInputAction;
     public Direction CharacterDirection{get;private set;}
-    public Animal AnimalCharacterHold{get;private set;}
+    public Vector3 CharacterPosition{get;private set;}
+    public IInteractable InteractableCharacterHold{get;private set;}
     private Stack<Command> characterCommands = new Stack<Command>();
 
     private List<Direction> moveInputPool;
@@ -154,23 +155,24 @@ public class PlayerController : MonoBehaviour
     void OnCharacterInteractInput() { 
         InteractionType interaction = InteractionType.NONE;
         Command command = new Command();
-        if(AnimalCharacterHold != null) {
+        if(InteractableCharacterHold != null) {
             if(IsPassable(CharacterDirection)) {
                 //手中的动物放在当前的格子
                 interaction = InteractionType.PUT_DOWN_ANIMALS;
-                command.executeAction += ()=>CharacterInteractCommand(interaction);
-                command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction));
-                AnimalCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);
+                command.executeAction += ()=>CharacterInteractCommand(interaction,InteractableCharacterHold);
+                command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),InteractableCharacterHold);
+                InteractableCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);     
             }
         }else {
             if(!IsInteractable()) return;
             interaction = InteractionType.PICK_UP_ANIMALS;
             List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
             foreach (var item in objects) {
-                item.OnPlayerInteract(interaction,gameObject,ref command);
+                item.OnPlayerInteract(interaction,gameObject,ref command);             
             }
-            command.executeAction += ()=>CharacterInteractCommand(interaction);
-            command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction));
+            command.executeAction += ()=>CharacterInteractCommand(interaction,objects[0]);
+            command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),objects[0]);
+            //前面已经检验过了,objects如果一个元素都没有就return了,但是如果有两个可以interact的物体还是会出问题
         }
         
         //()=>CharacterInteractCommand(interaction),()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction))
@@ -187,10 +189,18 @@ public class PlayerController : MonoBehaviour
         //玩家说了算
         Debug.Log("处理角色动画之类的东西");
         transform.position = Utilities.Vector3ToVector3Int(Utilities.DirectionToVector(dir) + transform.position);
+        CharacterPosition = transform.position;
     }
-    void CharacterInteractCommand(InteractionType interaction) {
+    void CharacterInteractCommand(InteractionType interaction,IInteractable interactableItem) {
         Debug.Log("cc interact"+interaction);
-        
+        switch (interaction) {
+            case InteractionType.PICK_UP_ANIMALS:
+            InteractableCharacterHold = interactableItem;
+            break;
+            case InteractionType.PUT_DOWN_ANIMALS:
+            InteractableCharacterHold = null;
+            break;
+        }
     }
     void CharacterUndoCommand() {
        if(!LevelManager.Instance.commandHandler.Undo()) {
@@ -210,10 +220,6 @@ public class PlayerController : MonoBehaviour
     bool IsInteractable() {   
         List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) return false;
-        foreach (var item in objects) {//如果有一个不能通关那就不能通过
-           if(!item.IsInteractable(gameObject)) return false;
-        }
-        Debug.Log(objects.Count);
         return true;
     }
 

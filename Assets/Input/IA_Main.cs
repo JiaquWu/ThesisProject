@@ -64,7 +64,7 @@ public class @IA_Main : IInputActionCollection, IDisposable
                     ""id"": ""1cb814a2-8ffa-4839-94c8-4f926c2f8f29"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)""
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [

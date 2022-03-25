@@ -13,6 +13,9 @@ public class LevelManager : SingletonManager<LevelManager>
     public static void RegisterObject(GameObject go) {
         if(!Instance.objects.Contains(go)) Instance.objects.Add(go);
     }
+    public static void UnRegisterObject(GameObject go) {
+        if(Instance.objects.Contains(go)) Instance.objects.Remove(go);
+    }
     public static List<GameObject> GetObjectsOn(Vector3 pos) {
         List<GameObject> results = new List<GameObject>();
         foreach (var item in Instance.objects) {
