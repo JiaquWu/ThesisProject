@@ -2920,7 +2920,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1475492051 stripped
 GameObject:
@@ -4005,7 +4005,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1855065826
 GameObject:
@@ -4362,6 +4362,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 113724e39be4b8e489c16e6cc2f56a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterUpSprite: {fileID: 21300000, guid: 8208d6c080c5130448ceab52e1129d81, type: 3}
+  characterDownSprite: {fileID: 21300000, guid: be942b6dfa9394344a46d15b05b07976,
+    type: 3}
+  characterLeftSprite: {fileID: 21300000, guid: c4ce095f8b026d641b017e5217bba29d,
+    type: 3}
+  characterRightSprite: {fileID: 21300000, guid: cb4aab5e4b92dc7449abe65a4038375a,
+    type: 3}
 --- !u!4 &2138252687
 Transform:
   m_ObjectHideFlags: 0
@@ -4371,7 +4378,7 @@ Transform:
   m_GameObject: {fileID: 2138252685}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1487467, y: 0.1487467, z: 0.1487467}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -4415,8 +4422,8 @@ SpriteRenderer:
   m_SortingLayerID: 1928062893
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: db1c1984ff2774143ae2b594228830eb, type: 3}
-  m_Color: {r: 0.52529603, g: 0.8584906, b: 0.2713154, a: 0.53333336}
+  m_Sprite: {fileID: 21300000, guid: cb4aab5e4b92dc7449abe65a4038375a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

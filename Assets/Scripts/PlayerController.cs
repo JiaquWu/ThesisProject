@@ -15,9 +15,27 @@ public class PlayerController : MonoBehaviour
     private List<Direction> moveInputPool;
     private Coroutine processMoveInputCoroutine;
 
+    [SerializeField]
+    private Sprite characterUpSprite;
+    [SerializeField]
+    private Sprite characterDownSprite;
+    [SerializeField]
+    private Sprite characterLeftSprite;
+    [SerializeField]
+    private Sprite characterRightSprite;
+    private Dictionary<Direction,Sprite> characterSpritesDic;
     private void Awake(){
-        CharacterDirection = Direction.UP;
+        characterSpritesDic = new Dictionary<Direction, Sprite>() {
+                               {Direction.UP,characterUpSprite},
+                               {Direction.DOWN,characterDownSprite},
+                               {Direction.LEFT,characterLeftSprite},
+                               {Direction.RIGHT,characterRightSprite}
+        };
+        CharacterRotateCommand(Direction.UP);
         moveInputPool=new List<Direction>();
+        
+        
+
     }
     private void OnEnable() {
         mainInputAction = new IA_Main();
@@ -147,7 +165,8 @@ public class PlayerController : MonoBehaviour
             }
             LevelManager.Instance.commandHandler.AddCommand(command); 
         }else {
-            Command command = new Command(()=>CharacterRotateCommand(dir),()=>CharacterRotateCommand(CharacterDirection));
+            Direction temp = CharacterDirection;
+            Command command = new Command(()=>CharacterRotateCommand(dir),()=>CharacterRotateCommand(temp));
             LevelManager.Instance.commandHandler.AddCommand(command);  
             //转向        
         }  
@@ -184,6 +203,9 @@ public class PlayerController : MonoBehaviour
     void CharacterRotateCommand(Direction targetDir) {
         //玩家从之前的朝向转向新的朝向
         CharacterDirection = targetDir;
+        if(!TryGetComponent<SpriteRenderer>(out SpriteRenderer renderer) || !characterSpritesDic.TryGetValue(targetDir, out Sprite sprite))  return;
+        renderer.sprite = sprite;
+        Debug.Log(sprite);
         Debug.Log("玩家新的朝向是" + CharacterDirection);
         //改变方向
     }
