@@ -155,12 +155,14 @@ public class PlayerController : MonoBehaviour
     void OnCharacterInteractInput() { 
         InteractionType interaction = InteractionType.NONE;
         Command command = new Command();
+        Debug.Log("当前动物是"+InteractableCharacterHold);
         if(InteractableCharacterHold != null) {
-            if(IsPassable(CharacterDirection)) {
+            if(IsPassable(CharacterDirection)) {  
                 //手中的动物放在当前的格子
+                IInteractable temp = InteractableCharacterHold;
                 interaction = InteractionType.PUT_DOWN_ANIMALS;
-                command.executeAction += ()=>CharacterInteractCommand(interaction,InteractableCharacterHold);
-                command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),InteractableCharacterHold);
+                command.executeAction += ()=>CharacterInteractCommand(interaction,temp);
+                command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),temp);
                 InteractableCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);     
             }
         }else {
@@ -192,7 +194,7 @@ public class PlayerController : MonoBehaviour
         CharacterPosition = transform.position;
     }
     void CharacterInteractCommand(InteractionType interaction,IInteractable interactableItem) {
-        Debug.Log("cc interact"+interaction);
+        Debug.Log("interactableItem"+interactableItem);
         switch (interaction) {
             case InteractionType.PICK_UP_ANIMALS:
             InteractableCharacterHold = interactableItem;
@@ -206,6 +208,7 @@ public class PlayerController : MonoBehaviour
        if(!LevelManager.Instance.commandHandler.Undo()) {
            Debug.Log("无销可撤");
        }
+       Debug.Log("当前动物是"+InteractableCharacterHold);
     }
     bool IsPassable(Direction dir) {
         List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(dir) + transform.position);
