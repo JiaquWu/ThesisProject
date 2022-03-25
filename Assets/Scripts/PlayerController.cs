@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
             // characterCommands.Push(command);
             // command.Execute();
             if(!IsPassable(dir)) return;
-            List<ILevelObject> objects = GetObjectsOn(Utilities.DirectionToVector(dir) + transform.position);
+            List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(dir) + transform.position);
             Command command = new Command();
             command.executeAction += ()=>CharacterMoveCommand(dir);
             command.undoAction += ()=>CharacterMoveCommand(Utilities.ReverseDirection(dir));
@@ -152,12 +152,27 @@ public class PlayerController : MonoBehaviour
         }  
     }
     void OnCharacterInteractInput() { 
-        //InteractionType interaction = InteractionType.NONE;
-        //这里要判断能不能交互,以及交互是什么类型的
-        if(!IsInteractable()) return;
-        List<ILevelObject> objects = GetObjectsOn((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
-
+        InteractionType interaction = InteractionType.NONE;
         Command command = new Command();
+        if(AnimalCharacterHold != null) {
+            if(IsPassable(CharacterDirection)) {
+                //手中的动物放在当前的格子
+                interaction = InteractionType.PUT_DOWN_ANIMALS;
+                command.executeAction += ()=>CharacterInteractCommand(interaction);
+                command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction));
+                AnimalCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);
+            }
+        }else {
+            if(!IsInteractable()) return;
+            interaction = InteractionType.PICK_UP_ANIMALS;
+            List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
+            foreach (var item in objects) {
+                item.OnPlayerInteract(interaction,gameObject,ref command);
+            }
+            command.executeAction += ()=>CharacterInteractCommand(interaction);
+            command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction));
+        }
+        
         //()=>CharacterInteractCommand(interaction),()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction))
         
         LevelManager.Instance.commandHandler.AddCommand(command);
@@ -182,19 +197,8 @@ public class PlayerController : MonoBehaviour
            Debug.Log("无销可撤");
        }
     }
-
-    List<ILevelObject> GetObjectsOn(Vector3 pos) {
-        List<GameObject> objects = LevelManager.GetObjectsOn(pos);
-        List<ILevelObject> results = new List<ILevelObject>();
-        foreach (var item in objects) {
-           if(item.TryGetComponent(out ILevelObject levelObject)) {
-               results.Add(levelObject);
-           }
-        }
-        return results;
-    }
     bool IsPassable(Direction dir) {
-        List<ILevelObject> objects = GetObjectsOn(Utilities.DirectionToVector(dir) + transform.position);
+        List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(dir) + transform.position);
         if(objects.Count == 0) return false;
         foreach (var item in objects) {//如果有一个不能通关那就不能通过
            if(!item.IsPassable(dir)) return false;
@@ -203,8 +207,8 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
-    bool IsInteractable() {
-        List<ILevelObject> objects = GetObjectsOn(Utilities.DirectionToVector(CharacterDirection) + transform.position);
+    bool IsInteractable() {   
+        List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) return false;
         foreach (var item in objects) {//如果有一个不能通关那就不能通过
            if(!item.IsInteractable(gameObject)) return false;

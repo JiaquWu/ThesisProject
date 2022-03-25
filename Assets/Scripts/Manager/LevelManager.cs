@@ -21,7 +21,15 @@ public class LevelManager : SingletonManager<LevelManager>
             }
         }
         return results;
-        
     }
-
+    public static List<T> GetInterfaceOn<T>(Vector3 pos) { 
+        List<GameObject> objects = GetObjectsOn(pos);
+        List<T> results = new List<T>();
+        foreach (var item in objects) {
+           if(item.TryGetComponent(out T t)) {
+               results.Add(t);
+           }
+        }
+        return results;
+    }
 }
