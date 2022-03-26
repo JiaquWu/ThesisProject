@@ -33,9 +33,7 @@ public class PlayerController : MonoBehaviour
         };
         CharacterRotateCommand(Direction.UP);
         moveInputPool=new List<Direction>();
-        
-        
-
+            
     }
     private void OnEnable() {
         mainInputAction = new IA_Main();
@@ -49,11 +47,6 @@ public class PlayerController : MonoBehaviour
 
         mainInputAction.Gameplay.Interact.performed += OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
-        // InputManager.MoveInputAction += OnCharacterMoveInput;
-        // TileManager.MoveAction += CharacterMove;
-        // TileManager.InteractAction += CharacterInteract;
-        // TileManager.RotateAction += CharacterRotate;
-        // InputManager.UndoInputAction += CharacterUndoCommand;
     }
     private void OnDisable() {
         
@@ -66,12 +59,6 @@ public class PlayerController : MonoBehaviour
         mainInputAction.Gameplay.Interact.performed -= OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
         mainInputAction.Disable();
-
-        //InputManager.MoveInputAction -= OnCharacterMoveInput;
-        // TileManager.MoveAction -= CharacterMove;
-        // TileManager.InteractAction -= CharacterInteract;
-        // TileManager.RotateAction -= CharacterRotate;
-        //InputManager.UndoInputAction -= CharacterUndoCommand;
     }
     
     

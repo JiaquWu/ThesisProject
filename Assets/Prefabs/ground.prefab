@@ -94,6 +94,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edb0e23633eef474184ae442434d5050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundOneHealthSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  groundZeroHealthSprite: {fileID: 21300000, guid: ed45de6292c495b4dba578fb1bbf1ffb,
+    type: 3}
+  groundOneHealthSprite: {fileID: 21300000, guid: 56e1b7f69ba468b49832633d6219af09,
+    type: 3}
   groundTwoHealthSprite: {fileID: 21300000, guid: 520baa9732fbd1f4f8c732291702ef82,
     type: 3}

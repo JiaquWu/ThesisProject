@@ -6,17 +6,18 @@ public class Ground :MonoBehaviour, ILevelObject {
     int maxHealth = 2;
     int currentHealth = 2;//但是是通过什么来设定呢?如果要手动设置,就公开出来,如果程序赋值,就变成属性
     [SerializeField]
+    private Sprite groundZeroHealthSprite;
+    [SerializeField]
     private Sprite groundOneHealthSprite;
     [SerializeField]
     private Sprite groundTwoHealthSprite;
-    // [SerializeField]
-    // private Sprite groundThreeHealthSprite;
+    
     private void OnEnable() {
         LevelManager.RegisterObject(gameObject);
         ChangeGroundSprite(currentHealth);
     }
     public bool IsPassable(Direction dir) {
-        return true;
+        return currentHealth != 0;
         //可能会存在单行道
     }
     public void OnPlayerEnter(GameObject player,ref Command command) {  
@@ -40,7 +41,7 @@ public class Ground :MonoBehaviour, ILevelObject {
     void ChangeGroundSprite(int health) {
         if(health == 0) {
             //让图片消失
-            GetComponent<SpriteRenderer>().sprite = null;
+            GetComponent<SpriteRenderer>().sprite = groundZeroHealthSprite;
         }else if(health == 1) {
             GetComponent<SpriteRenderer>().sprite = groundOneHealthSprite;
         }else if(health == 2) {
