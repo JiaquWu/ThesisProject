@@ -12,6 +12,9 @@ public class Boat :MonoBehaviour,IInteractable,ILevelObject
 
     }
     public bool IsPassable(Direction dir) {
+        return false;
+    }
+    public bool IsPlaceable() {
         return true;
     }
     public bool IsInteractable(GameObject player) {

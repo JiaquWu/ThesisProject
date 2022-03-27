@@ -163,7 +163,7 @@ public class PlayerController : MonoBehaviour
         Command command = new Command();
         Debug.Log("当前动物是"+InteractableCharacterHold);
         if(InteractableCharacterHold != null) {
-            if(IsPassable(CharacterDirection)) {  
+            if(IsPlaceable()) {  
                 //手中的动物放在当前的格子
                 IInteractable temp = InteractableCharacterHold;
                 interaction = InteractionType.PUT_DOWN_ANIMALS;
@@ -225,11 +225,19 @@ public class PlayerController : MonoBehaviour
         foreach (var item in objects) {//如果有一个不能通关那就不能通过
            if(!item.IsPassable(dir)) return false;
         }
-        Debug.Log(objects.Count);
+        return true;
+    }
+    bool IsPlaceable() {//放置应该不需要判断方向
+        List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
+        if(objects.Count == 0) return false;
+        foreach (var item in objects) {
+            if(!item.IsPlaceable()) return false;
+        }
         return true;
     }
 
-    bool IsInteractable() {   
+    bool IsInteractable() {
+        //有一个能交互的就行   
         List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) return false;
         return true;

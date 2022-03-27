@@ -6,5 +6,5 @@ public interface ILevelObject
 {
     void OnPlayerEnter(GameObject player,ref Command command);
     bool IsPassable(Direction dir);
-    
+    bool IsPlaceable();
 }

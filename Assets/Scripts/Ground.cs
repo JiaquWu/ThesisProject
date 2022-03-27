@@ -20,6 +20,9 @@ public class Ground :MonoBehaviour, ILevelObject {
         return currentHealth != 0;
         //可能会存在单行道
     }
+    public bool IsPlaceable() {
+        return currentHealth != 0;
+    }
     public void OnPlayerEnter(GameObject player,ref Command command) {  
         //判断玩家当前举着什么动物,来给command绑定不同的action
         //没有任何动物,不绑定任何action

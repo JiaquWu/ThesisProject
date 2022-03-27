@@ -21,6 +21,9 @@ public class Animal : MonoBehaviour,ILevelObject,IInteractable
         Debug.Log("这里不能走");
         return false;
     }
+    public bool IsPlaceable() {
+        return false;
+    }
     public bool IsInteractable(GameObject player) {
         return !isBeingHold;
     }
