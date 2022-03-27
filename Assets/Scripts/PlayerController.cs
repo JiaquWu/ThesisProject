@@ -173,7 +173,8 @@ public class PlayerController : MonoBehaviour
                 List<IPlaceable> placeables = LevelManager.GetInterfaceOn<IPlaceable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
                 foreach (var item in placeables) {
                     item.OnPlayerPlace(temp,ref command);
-                }     
+                }
+                LevelManager.Instance.commandHandler.AddCommand(command);     
             }
         }else {
             if(!IsInteractable()) return;
@@ -185,11 +186,14 @@ public class PlayerController : MonoBehaviour
             command.executeAction += ()=>CharacterInteractCommand(interaction,objects[0]);
             command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),objects[0]);
             //前面已经检验过了,objects如果一个元素都没有就return了,但是如果有两个可以interact的物体还是会出问题
-        }
-        
-        //()=>CharacterInteractCommand(interaction),()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction))
-        
-        LevelManager.Instance.commandHandler.AddCommand(command);
+            //这里还有一件事要做,就是玩家拿起来的时候实际上会把地板压一下
+            List<Ground> grounds = LevelManager.GetInterfaceOn<Ground>(transform.position);
+            foreach (var item in grounds) {
+               command.executeAction += ()=>item.OnBreakingGround(true);
+               command.undoAction += ()=>item.OnBreakingGround(false);//这里的true可以看objects[0]具体是什么动物
+            }
+            LevelManager.Instance.commandHandler.AddCommand(command);
+        }  
     }
     void CharacterRotateCommand(Direction targetDir) {
         //玩家从之前的朝向转向新的朝向
