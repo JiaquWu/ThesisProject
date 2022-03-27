@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ILevelObject 
+public interface IPassable 
 {
-    void OnPlayerEnter(GameObject player,ref Command command);
     bool IsPassable(Direction dir);
-    bool IsPlaceable();
+    void OnPlayerEnter(GameObject player,ref Command command);
+    
 }

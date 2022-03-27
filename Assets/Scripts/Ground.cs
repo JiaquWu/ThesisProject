@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
-public class Ground :MonoBehaviour, ILevelObject {
+public class Ground :MonoBehaviour, IPassable,IPlaceable {
     int maxHealth = 2;
     int currentHealth = 2;//但是是通过什么来设定呢?如果要手动设置,就公开出来,如果程序赋值,就变成属性
     [SerializeField]
@@ -39,6 +39,9 @@ public class Ground :MonoBehaviour, ILevelObject {
                                        ChangeGroundSprite(currentHealth);};           
         }
         //这里不是简单地添加离开和进入两个方法,因为比如说玩家拿着动物走进了一个格子,它应该掉血,如果是离开血还是会掉的,应该是"撤销"
+    }
+    public void OnPlayerPlace(GameObject player,ref Command command) {
+        
     }
 
     void ChangeGroundSprite(int health) {

@@ -2,27 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Animal : MonoBehaviour,ILevelObject,IInteractable
+public class Animal : MonoBehaviour,IInteractable
 {
     private bool isBeingHold;
     private void OnEnable() {
         LevelManager.RegisterObject(gameObject);
     }
-    public void OnPlayerEnter(GameObject player,ref Command command) {
-        //
-    }
+
     public void OnPlayerInteract(InteractionType interaction,GameObject player,ref Command command) {
         if(!player.TryGetComponent<PlayerController>(out PlayerController playerController)) return;
         Vector3 animalPlacePosition = playerController.CharacterPosition + Utilities.DirectionToVector(playerController.CharacterDirection);
         command.executeAction += ()=>AnimalInteractCommand(interaction,animalPlacePosition);
         command.undoAction += ()=>AnimalInteractCommand(Utilities.ReverseInteractionType(interaction),animalPlacePosition);
-    }
-    public bool IsPassable(Direction dir) {
-        Debug.Log("这里不能走");
-        return false;
-    }
-    public bool IsPlaceable() {
-        return false;
     }
     public bool IsInteractable(GameObject player) {
         return !isBeingHold;

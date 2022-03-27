@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviour
             // characterCommands.Push(command);
             // command.Execute();
             if(!IsPassable(dir)) return;
-            List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(dir) + transform.position);
+            List<IPassable> objects = LevelManager.GetInterfaceOn<IPassable>(Utilities.DirectionToVector(dir) + transform.position);
             Command command = new Command();
             command.executeAction += ()=>CharacterMoveCommand(dir);
             command.undoAction += ()=>CharacterMoveCommand(Utilities.ReverseDirection(dir));
@@ -220,18 +220,19 @@ public class PlayerController : MonoBehaviour
        Debug.Log("当前动物是"+InteractableCharacterHold);
     }
     bool IsPassable(Direction dir) {
-        List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(dir) + transform.position);
+        List<GameObject> objects = LevelManager.GetObjectsOn(Utilities.DirectionToVector(dir) + transform.position);
         if(objects.Count == 0) return false;
-        foreach (var item in objects) {//如果有一个不能通关那就不能通过
-           if(!item.IsPassable(dir)) return false;
+        foreach (var item in objects) {
+           if(!item.TryGetComponent<IPassable>(out IPassable passable)) return false;//如果有一个没有这个接口那就不能通过
+           if(!passable.IsPassable(dir)) return false;//
         }
         return true;
     }
-    bool IsPlaceable() {//放置应该不需要判断方向
-        List<ILevelObject> objects = LevelManager.GetInterfaceOn<ILevelObject>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
+    bool IsPlaceable() {//放置应该不需要判断方向,一个地方能不能放东西,还要判断这个地方没有其他东西
+        List<GameObject> objects = LevelManager.GetObjectsOn(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) return false;
         foreach (var item in objects) {
-            if(!item.IsPlaceable()) return false;
+            if(!item.TryGetComponent<IPlaceable>(out IPlaceable placeable)) return false;
         }
         return true;
     }
