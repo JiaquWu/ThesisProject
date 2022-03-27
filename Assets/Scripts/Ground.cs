@@ -40,8 +40,8 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
         }
         //这里不是简单地添加离开和进入两个方法,因为比如说玩家拿着动物走进了一个格子,它应该掉血,如果是离开血还是会掉的,应该是"撤销"
     }
-    public void OnPlayerPlace(GameObject player,ref Command command) {
-        
+    public void OnPlayerPlace(IInteractable player,ref Command command) {
+
     }
 
     void ChangeGroundSprite(int health) {

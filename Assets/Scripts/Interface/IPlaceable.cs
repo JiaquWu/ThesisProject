@@ -5,5 +5,5 @@ using UnityEngine;
 public interface IPlaceable
 {
     bool IsPlaceable();
-    void OnPlayerPlace(GameObject player,ref Command command); 
+    void OnPlayerPlace(IInteractable interactable,ref Command command); 
 }

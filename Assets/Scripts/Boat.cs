@@ -7,8 +7,9 @@ public class Boat :MonoBehaviour,IPlaceable
     private void OnEnable() {
         LevelManager.RegisterObject(gameObject);
     }
-    public void OnPlayerPlace(GameObject player,ref Command command) {
-        
+    public void OnPlayerPlace(IInteractable interactable,ref Command command) {
+        command.executeAction += ()=>Debug.Log("金毛上船了" + interactable);
+        command.undoAction += ()=>Debug.Log("撤回" + interactable);
     }
     public bool IsPassable(Direction dir) {
         return false;

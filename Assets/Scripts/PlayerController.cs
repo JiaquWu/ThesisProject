@@ -169,7 +169,11 @@ public class PlayerController : MonoBehaviour
                 interaction = InteractionType.PUT_DOWN_ANIMALS;
                 command.executeAction += ()=>CharacterInteractCommand(interaction,temp);
                 command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),temp);
-                InteractableCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);     
+                InteractableCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);
+                List<IPlaceable> placeables = LevelManager.GetInterfaceOn<IPlaceable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
+                foreach (var item in placeables) {
+                    item.OnPlayerPlace(temp,ref command);
+                }     
             }
         }else {
             if(!IsInteractable()) return;
