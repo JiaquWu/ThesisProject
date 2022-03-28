@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,9 @@ using UnityEngine;
 public class LevelManager : SingletonManager<LevelManager>
 {
     public CommandHandler commandHandler{get;private set;}
+    public static event Action OnPlayerDead;
+    public bool IsPlayerDead{get;private set;}
+
     private void Awake() {
         commandHandler = new CommandHandler();
     }
@@ -34,5 +38,14 @@ public class LevelManager : SingletonManager<LevelManager>
            }
         }
         return results;
+    }
+    public void UndoCheckPlayerDead() {
+        if(IsPlayerDead) IsPlayerDead = false;
+    }
+    public void OnPlayerDeadInvoke() {
+        //玩家死了之后会发生的事情,比如说显示UI,播放声音
+        OnPlayerDead.Invoke();
+        IsPlayerDead = true;
+        Debug.Log("玩家死辣");
     }
 }

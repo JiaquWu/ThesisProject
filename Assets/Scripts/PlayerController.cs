@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
 
         mainInputAction.Gameplay.Interact.performed += OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
+        LevelManager.OnPlayerDead += ()=>OnPlayerDead();
     }
     private void OnDisable() {
         
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour
         mainInputAction.Gameplay.Interact.performed -= OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
         mainInputAction.Disable();
+        LevelManager.OnPlayerDead -= ()=>OnPlayerDead();
     }
     
     
@@ -71,7 +73,8 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
-    void OnMoveUpPerformed(InputAction.CallbackContext context) {         
+    void OnMoveUpPerformed(InputAction.CallbackContext context) {
+        if(LevelManager.Instance.IsPlayerDead) return;
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.UP)) {
@@ -85,7 +88,8 @@ public class PlayerController : MonoBehaviour
             moveInputPool.Remove(Direction.UP);
         }
     }
-    void OnMoveLeftPerformed(InputAction.CallbackContext context) {     
+    void OnMoveLeftPerformed(InputAction.CallbackContext context) {
+        if(LevelManager.Instance.IsPlayerDead) return; 
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.LEFT)) {
@@ -99,7 +103,8 @@ public class PlayerController : MonoBehaviour
             moveInputPool.Remove(Direction.LEFT);
         }    
     }
-    void OnMoveDownPerformed(InputAction.CallbackContext context) {        
+    void OnMoveDownPerformed(InputAction.CallbackContext context) {
+        if(LevelManager.Instance.IsPlayerDead) return;    
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.DOWN)) {
@@ -114,7 +119,8 @@ public class PlayerController : MonoBehaviour
             moveInputPool.Remove(Direction.DOWN);
         }    
     }
-    void OnMoveRightPerformed(InputAction.CallbackContext context) {         
+    void OnMoveRightPerformed(InputAction.CallbackContext context) {
+        if(LevelManager.Instance.IsPlayerDead) return;         
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.RIGHT)) {
@@ -129,10 +135,11 @@ public class PlayerController : MonoBehaviour
         }  
     }
     void OnInteractPerformed(InputAction.CallbackContext context) {
+        if(LevelManager.Instance.IsPlayerDead) return;
         OnCharacterInteractInput();
     }
     void OnUndoPerformed(InputAction.CallbackContext context) {
-        Debug.Log(context.ReadValueAsButton());
+        LevelManager.Instance.UndoCheckPlayerDead();
         CharacterUndoCommand();          
     }
     void OnCharacterMoveInput(Direction dir) {
@@ -226,6 +233,10 @@ public class PlayerController : MonoBehaviour
            Debug.Log("无销可撤");
        }
        Debug.Log("当前动物是"+InteractableCharacterHold);
+    }
+
+    void OnPlayerDead() {
+        moveInputPool.Clear();
     }
     bool IsPassable(Direction dir) {
         List<GameObject> objects = LevelManager.GetObjectsOn(Utilities.DirectionToVector(dir) + transform.position);

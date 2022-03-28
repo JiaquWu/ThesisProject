@@ -47,6 +47,10 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
         if(b) {
             currentHealth = Mathf.Clamp(currentHealth-1,0,maxHealth);
             ChangeGroundSprite(currentHealth);
+            if(currentHealth <= 0) {
+                //说明玩家死了
+                LevelManager.Instance.OnPlayerDeadInvoke();
+            }
         }else {
             currentHealth = Mathf.Clamp(currentHealth+1,0,maxHealth);
             ChangeGroundSprite(currentHealth);
