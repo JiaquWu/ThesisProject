@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IInteractable {
     bool IsInteractable(GameObject player);
-    void OnPlayerInteract(InteractionType interaction,GameObject player,ref Command command);
+    void OnPlayerInteract(InteractionType interaction,IPlaceable placeable, GameObject player,ref Command command);
 }

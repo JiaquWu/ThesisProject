@@ -170,13 +170,13 @@ public class PlayerController : MonoBehaviour
         Command command = new Command();
         Debug.Log("当前动物是"+InteractableCharacterHold);
         if(InteractableCharacterHold != null) {
-            if(IsPlaceable()) {  
+            if(IsPlaceable(out IPlaceable placeable)) {  
                 //手中的动物放在当前的格子
                 IInteractable temp = InteractableCharacterHold;
                 interaction = InteractionType.PUT_DOWN_ANIMALS;
                 command.executeAction += ()=>CharacterInteractCommand(interaction,temp);
                 command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),temp);
-                InteractableCharacterHold.OnPlayerInteract(interaction,gameObject,ref command);
+                InteractableCharacterHold.OnPlayerInteract(interaction,placeable,gameObject,ref command);
                 List<IPlaceable> placeables = LevelManager.GetInterfaceOn<IPlaceable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
                 foreach (var item in placeables) {
                     item.OnPlayerPlace(temp,ref command);
@@ -186,9 +186,11 @@ public class PlayerController : MonoBehaviour
         }else {
             if(!IsInteractable()) return;
             interaction = InteractionType.PICK_UP_ANIMALS;
+            List<IPlaceable> placeables = LevelManager.GetInterfaceOn<IPlaceable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
+            IPlaceable temp = placeables[0];//这里是要获取主角要交互物体前面的地面是什么 普通地面还是船
             List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
             foreach (var item in objects) {
-                item.OnPlayerInteract(interaction,gameObject,ref command);             
+                item.OnPlayerInteract(interaction,temp,gameObject,ref command);             
             }
             command.executeAction += ()=>CharacterInteractCommand(interaction,objects[0]);
             command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),objects[0]);
@@ -247,12 +249,22 @@ public class PlayerController : MonoBehaviour
         }
         return true;
     }
-    bool IsPlaceable() {//放置应该不需要判断方向,一个地方能不能放东西,还要判断这个地方没有其他东西
+    bool IsPlaceable(out IPlaceable placeable) {//放置应该不需要判断方向,一个地方能不能放东西,还要判断这个地方没有其他东西
+        IPlaceable temp = null;
         List<GameObject> objects = LevelManager.GetObjectsOn(Utilities.DirectionToVector(CharacterDirection) + transform.position);
-        if(objects.Count == 0) return false;
-        foreach (var item in objects) {
-            if(!item.TryGetComponent<IPlaceable>(out IPlaceable placeable)) return false;
+        if(objects.Count == 0) {
+            placeable = null;
+            return false;
         }
+        foreach (var item in objects) {
+            if(!item.TryGetComponent<IPlaceable>(out IPlaceable place)) {
+                placeable = null;
+                return false;
+            }else {
+                temp = place;//一个地方最多有一个iplaceable,所以不会替换
+            }
+        }
+        placeable = temp;
         return true;
     }
 
