@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Ground :MonoBehaviour, IPassable,IPlaceable {
     int maxHealth = 2;
+    [SerializeField]
     int currentHealth = 2;//但是是通过什么来设定呢?如果要手动设置,就公开出来,如果程序赋值,就变成属性
     [SerializeField]
     private Sprite groundZeroHealthSprite;

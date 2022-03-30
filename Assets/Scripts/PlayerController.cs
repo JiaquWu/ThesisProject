@@ -260,8 +260,12 @@ public class PlayerController : MonoBehaviour
             if(!item.TryGetComponent<IPlaceable>(out IPlaceable place)) {
                 placeable = null;
                 return false;
-            }else {
+            }else if(place.IsPlaceable()){
                 temp = place;//一个地方最多有一个iplaceable,所以不会替换
+            }else {
+                //说明放不了
+                placeable = null;
+                return false;
             }
         }
         placeable = temp;
@@ -272,7 +276,10 @@ public class PlayerController : MonoBehaviour
         //有一个能交互的就行   
         List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) return false;
-        return true;
+        foreach (var item in objects) {
+            if(item.IsInteractable(gameObject)) return true;
+        }
+        return false;       
     }
 
 }
