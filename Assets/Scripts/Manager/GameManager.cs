@@ -26,6 +26,7 @@ public class GameManager : SingletonManager<GameManager> {
     private string level_06 = "level_06";
     private string level_07 = "level_07";
     private string level_08 = "level_08";
+    private string level_09 = "level_09";
 
     private void Awake() {
         allLevels = new List<string>() {
@@ -37,6 +38,7 @@ public class GameManager : SingletonManager<GameManager> {
             level_06,
             level_07,
             level_08,
+            level_09
         };
     }
 
