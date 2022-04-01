@@ -48,11 +48,15 @@ public class GameManager : SingletonManager<GameManager> {
         };
     }
 
-    public static void LoadLevel(bool isPrevLevel) {
+    public static void LoadLevel(int levelIndex) {
+        if(Instance.allLevels.Count <= levelIndex) return;
+        SceneManager.LoadScene(Instance.allLevels[levelIndex]);
+    }
+    public static void LoadNextOrPrevLevel(bool isPrevLevel) {
         string currentLevel = SceneManager.GetActiveScene().name;
         if(Instance.allLevels != null && Instance.allLevels.Contains(currentLevel)) {
             int targetLevelIndex = isPrevLevel?Instance.allLevels.IndexOf(currentLevel) - 1:Instance.allLevels.IndexOf(currentLevel) + 1;
-            SceneManager.LoadScene(targetLevelIndex);//一定不是第一个或者最后一个,没有对应按钮   
+            SceneManager.LoadScene(Instance.allLevels[targetLevelIndex]);//一定不是第一个或者最后一个,没有对应按钮   
         }
     }
 

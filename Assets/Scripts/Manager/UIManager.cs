@@ -17,10 +17,13 @@ public class UIManager : SingletonManager<UIManager> {
             rightLevelButton.SetActive(!GameManager.isLastLevel());
         }
     }
+    public void OnStartFirstLevelButtonClicked() {
+        GameManager.LoadLevel(0);
+    }
     public void OnLeftLevelButtonClicked() {
-        GameManager.LoadLevel(true);
+        GameManager.LoadNextOrPrevLevel(true);
     }
     public void OnRightLevelButtonClicked() {
-        GameManager.LoadLevel(false);
+        GameManager.LoadNextOrPrevLevel(false);
     }
 }
