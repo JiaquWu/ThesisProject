@@ -81,7 +81,7 @@ public class Boat :MonoBehaviour,IPlaceable,IPassable {
     }
     IEnumerator BoatLeave() {
         int i = 0;
-        while(i< 5f/Time.fixedDeltaTime) {//不能直接deltatime,因为帧率不固定
+        while(i< 8f/Time.fixedDeltaTime) {//不能直接deltatime,因为帧率不固定
             transform.position += Vector3.right * Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
             i++;
