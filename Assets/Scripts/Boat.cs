@@ -5,9 +5,12 @@ using UnityEngine;
 public class Boat :MonoBehaviour,IPlaceable,IPassable {
 
     private List<SpriteRenderer> animalsAttachedList = new List<SpriteRenderer>();
+    private void Update() {
+        Debug.Log(transform.position);
+    }
     private void OnEnable() {
         LevelManager.RegisterObject(gameObject);
-        LevelManager.OnlevelFinish +=()=>OnLevelFinish();
+        LevelManager.OnlevelFinish += OnLevelFinish;
 
         SpriteRenderer[] temp = GetComponentsInChildren<SpriteRenderer>(true);
         foreach (var item in temp) {
@@ -18,7 +21,7 @@ public class Boat :MonoBehaviour,IPlaceable,IPassable {
         }
     }
     private void OnDisable() {
-        LevelManager.OnlevelFinish -=()=>OnLevelFinish();
+        LevelManager.OnlevelFinish -= OnLevelFinish;
     }
     public void OnPlayerPlace(IInteractable interactable,ref Command command) {
         command.executeAction += ()=>LevelManager.Instance.OnInteractableEnterBoat(interactable,true);
@@ -74,7 +77,7 @@ public class Boat :MonoBehaviour,IPlaceable,IPassable {
         }
         //船自己怎么开走呢
         StartCoroutine(BoatLeave());
-
+        
     }
     IEnumerator BoatLeave() {
         int i = 0;

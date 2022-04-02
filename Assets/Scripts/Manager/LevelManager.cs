@@ -17,6 +17,10 @@ public class LevelManager : SingletonManager<LevelManager>
     List<GameObject> levelObjects = new List<GameObject>();//当前level中占位置的所有object,被玩家拿着的不算
     List<IInteractable> levelGoals = new List<IInteractable>();//这关需要搬的东西
 
+    private void OnDisable() {
+        Instance.levelObjects.Clear();
+        Instance.levelGoals.Clear();
+    }
     public static void RegisterObject(GameObject go) {
         if(!Instance.levelObjects.Contains(go)) Instance.levelObjects.Add(go);
         if(go.TryGetComponent<IInteractable>(out IInteractable interactable)) {

@@ -50,8 +50,8 @@ public class PlayerController : MonoBehaviour
 
         mainInputAction.Gameplay.Interact.performed += OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
-        LevelManager.OnPlayerDead += ()=>OnPlayerDead();
-        LevelManager.OnlevelFinish += ()=>OnLevelFinish();
+        LevelManager.OnPlayerDead += OnPlayerDead;
+        LevelManager.OnlevelFinish += OnLevelFinish;
     }
     private void OnDisable() {
         
@@ -64,8 +64,8 @@ public class PlayerController : MonoBehaviour
         mainInputAction.Gameplay.Interact.performed -= OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
         mainInputAction.Disable();
-        LevelManager.OnPlayerDead -= ()=>OnPlayerDead();
-        LevelManager.OnlevelFinish -= ()=>OnLevelFinish();
+        LevelManager.OnPlayerDead -= OnPlayerDead;
+        LevelManager.OnlevelFinish -= OnLevelFinish;
     }
     
     
