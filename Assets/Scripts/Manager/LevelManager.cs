@@ -6,10 +6,11 @@ using UnityEngine;
 public class LevelManager : SingletonManager<LevelManager>
 {
     public CommandHandler commandHandler{get;private set;}
+    public static event Action OnlevelFinish;
     public static event Action OnPlayerDead;
     public bool IsPlayerDead{get;private set;}
     public bool IsPlayerEnterBoat{get;private set;}
-
+    public bool IsLevelFinished{get;private set;}
     private void Awake() {
         commandHandler = new CommandHandler();
     }
@@ -80,6 +81,8 @@ public class LevelManager : SingletonManager<LevelManager>
         }
     }
     void OnLevelFinish() {
+        OnlevelFinish.Invoke();
+        IsLevelFinished = true;
         Debug.Log("关卡通过了");
     }
 }

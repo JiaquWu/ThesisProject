@@ -14,7 +14,10 @@ public class PlayerController : MonoBehaviour
 
     private List<Direction> moveInputPool;
     private Coroutine processMoveInputCoroutine;
-
+    [SerializeField]
+    private SpriteRenderer animalAttached;
+    [SerializeField]
+    private Sprite happyGoldenSprite;
     [SerializeField]
     private Sprite characterUpSprite;
     [SerializeField]
@@ -33,7 +36,7 @@ public class PlayerController : MonoBehaviour
         };
         CharacterRotateCommand(Direction.UP);
         moveInputPool=new List<Direction>();
-            
+        if(animalAttached != null) animalAttached.enabled = false;     
     }
     private void OnEnable() {
         mainInputAction = new IA_Main();
@@ -48,6 +51,7 @@ public class PlayerController : MonoBehaviour
         mainInputAction.Gameplay.Interact.performed += OnInteractPerformed;
         mainInputAction.Gameplay.Undo.performed += OnUndoPerformed;
         LevelManager.OnPlayerDead += ()=>OnPlayerDead();
+        LevelManager.OnlevelFinish += ()=>OnLevelFinish();
     }
     private void OnDisable() {
         
@@ -61,6 +65,7 @@ public class PlayerController : MonoBehaviour
         mainInputAction.Gameplay.Undo.performed -= OnUndoPerformed;
         mainInputAction.Disable();
         LevelManager.OnPlayerDead -= ()=>OnPlayerDead();
+        LevelManager.OnlevelFinish -= ()=>OnLevelFinish();
     }
     
     
@@ -74,7 +79,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     void OnMoveUpPerformed(InputAction.CallbackContext context) {
-        if(LevelManager.Instance.IsPlayerDead) return;
+        if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return;
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.UP)) {
@@ -89,7 +94,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     void OnMoveLeftPerformed(InputAction.CallbackContext context) {
-        if(LevelManager.Instance.IsPlayerDead) return; 
+        if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return; 
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.LEFT)) {
@@ -104,7 +109,7 @@ public class PlayerController : MonoBehaviour
         }    
     }
     void OnMoveDownPerformed(InputAction.CallbackContext context) {
-        if(LevelManager.Instance.IsPlayerDead) return;    
+        if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return;    
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.DOWN)) {
@@ -120,7 +125,7 @@ public class PlayerController : MonoBehaviour
         }    
     }
     void OnMoveRightPerformed(InputAction.CallbackContext context) {
-        if(LevelManager.Instance.IsPlayerDead) return;         
+        if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return;         
         if (context.ReadValueAsButton()) {
             // 按下
             if (!moveInputPool.Contains(Direction.RIGHT)) {
@@ -139,6 +144,7 @@ public class PlayerController : MonoBehaviour
         OnCharacterInteractInput();
     }
     void OnUndoPerformed(InputAction.CallbackContext context) {
+        if(LevelManager.Instance.IsLevelFinished) return;
         LevelManager.Instance.UndoCheckPlayerDead();
         CharacterUndoCommand();          
     }
@@ -209,24 +215,24 @@ public class PlayerController : MonoBehaviour
         CharacterDirection = targetDir;
         if(!TryGetComponent<SpriteRenderer>(out SpriteRenderer renderer) || !characterSpritesDic.TryGetValue(targetDir, out Sprite sprite))  return;
         renderer.sprite = sprite;
-        Debug.Log(sprite);
-        Debug.Log("玩家新的朝向是" + CharacterDirection);
         //改变方向
     }
     void CharacterMoveCommand(Direction dir) {
         //玩家说了算
-        Debug.Log("处理角色动画之类的东西");
         transform.position = Utilities.Vector3ToVector3Int(Utilities.DirectionToVector(dir) + transform.position);
         CharacterPosition = transform.position;
     }
     void CharacterInteractCommand(InteractionType interaction,IInteractable interactableItem) {
-        Debug.Log("interactableItem"+interactableItem);
         switch (interaction) {
             case InteractionType.PICK_UP_ANIMALS:
             InteractableCharacterHold = interactableItem;
+            //如果是拿起动物就让玩家头上显示狗狗
+            animalAttached.enabled = true;
             break;
             case InteractionType.PUT_DOWN_ANIMALS:
             InteractableCharacterHold = null;
+            //如果是放下就让这个狗狗不显示
+            animalAttached.enabled = false;
             break;
         }
     }
@@ -236,7 +242,11 @@ public class PlayerController : MonoBehaviour
        }
        Debug.Log("当前动物是"+InteractableCharacterHold);
     }
-
+    void OnLevelFinish() {
+        //让玩家头上的狗狗笑起来
+        Debug.Log(animalAttached.enabled);
+        if(animalAttached.enabled == true) animalAttached.sprite = happyGoldenSprite;
+    }
     void OnPlayerDead() {
         moveInputPool.Clear();
     }
