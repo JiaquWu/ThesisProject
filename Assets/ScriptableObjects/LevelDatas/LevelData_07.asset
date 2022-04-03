@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fileName: level_07
   levelName: "\u5173\u536107"
-  levelThumbnail: {fileID: 0}
+  levelThumbnail: {fileID: 21300000, guid: 6ff6fdd145219b549a1e09f8bc41a6c2, type: 3}
