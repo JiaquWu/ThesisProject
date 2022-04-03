@@ -13,6 +13,7 @@ public class TileManager : SingletonManager<TileManager>
 
     [SerializeField]
     private GameObject tile_Prefab;
+    private LevelData levelData;
     [SerializeField]
     private LevelConfigSO currentLevelConfig;
     private Tile currentTile;

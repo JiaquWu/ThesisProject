@@ -238,7 +238,7 @@
             "id": "a0ddbdc1-086f-4977-9bed-bd6c55cdb4d0",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "Esc",
                     "type": "Button",
                     "id": "0b4a4689-fbba-4cfd-9341-1e3c7cf93b5a",
                     "expectedControlType": "Button",
@@ -250,11 +250,11 @@
                 {
                     "name": "",
                     "id": "c438d8e7-77fb-4ae4-a85d-ae49b25f0362",
-                    "path": "",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Esc",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
