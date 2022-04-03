@@ -13,7 +13,7 @@ public class SingletonManager<T> : MonoBehaviour
                 if(!instance) {
                     GameObject go = new GameObject();
                     instance = go.AddComponent<T>();
-                    Debug.LogError(string.Format("There was no {0} object in any of the currently loaded scenes",instance));
+                    Debug.LogWarning(string.Format("There was no {0} object in any of the currently loaded scenes",instance));
                 }
             }
             return instance;

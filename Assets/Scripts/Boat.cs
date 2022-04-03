@@ -5,9 +5,6 @@ using UnityEngine;
 public class Boat :MonoBehaviour,IPlaceable,IPassable {
 
     private List<SpriteRenderer> animalsAttachedList = new List<SpriteRenderer>();
-    private void Update() {
-        Debug.Log(transform.position);
-    }
     private void OnEnable() {
         LevelManager.RegisterObject(gameObject);
         LevelManager.OnlevelFinish += OnLevelFinish;

@@ -19,6 +19,7 @@ public enum InteractionType {
 public class GameManager : SingletonManager<GameManager> {
     [SerializeField]
     private LevelSequence levelSequence;
+    public LevelSequence LevelSequence => levelSequence;
     // private List<string> allLevels;
     // private string level_01 = "level_01";
     // private string level_02 = "level_02";
@@ -63,6 +64,11 @@ public class GameManager : SingletonManager<GameManager> {
         SceneManager.LoadScene(data.FileName);
         // if(Instance.allLevels.Count <= levelIndex) return;
         // SceneManager.LoadScene(Instance.allLevels[levelIndex]);
+    }
+    public void LoadLevel(string fileName) {
+        for (int i = 0; i < levelSequence.levels.Count; i++) {
+            if(levelSequence.levels[i].FileName == fileName) SceneManager.LoadScene(fileName);
+        }
     }
     public void LoadNextOrPrevLevel(bool isPrevLevel) {
         string currentLevel = SceneManager.GetActiveScene().name;
