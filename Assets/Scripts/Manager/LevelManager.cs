@@ -74,9 +74,9 @@ public class LevelManager : SingletonManager<LevelManager>
             //说明动物进来了
             if(levelGoals.Contains(interactable)) {
                 levelGoals.Remove(interactable);
-                // if(levelGoals.Count == 0 && IsPlayerEnterBoat) {//这里理论上不用判断两次,但是不确定哪个方法先执行,所以这样保险,而且由于IsPlayerEnterBoat变了
-                //     OnLevelFinish();
-                // }
+                if(levelGoals.Count == 0 && IsPlayerEnterBoat) {//这里理论上不用判断两次,但是不确定哪个方法先执行,所以这样保险,而且由于IsPlayerEnterBoat变了
+                    OnLevelFinish();
+                }
             }
         }else {
             if(!levelGoals.Contains(interactable)) {

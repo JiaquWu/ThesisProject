@@ -31,6 +31,11 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
         if(!player.TryGetComponent<PlayerController>(out PlayerController controller)) return;
         IInteractable temp = controller.InteractableCharacterHold;
         Debug.Log("这里会进来" + temp);
+        //要考虑到玩家从船上走到地面
+        if(LevelManager.Instance.IsPlayerEnterBoat) {
+            command.executeAction += ()=>LevelManager.Instance.OnPlayerEnterBoat(false);
+            command.undoAction += ()=>LevelManager.Instance.OnPlayerEnterBoat(true);
+        }
         if(temp == null) {
             //说明玩家没有拿东西,因此没啥反应,走进来不会有,撤销也不会有
         }else {
@@ -51,8 +56,10 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
             if(currentHealth <= 0) {
                 //说明玩家死了
                 LevelManager.Instance.OnPlayerDeadInvoke();
+                UIManager.Instance.SetDrownObjectActive(true);
             }
         }else {
+            UIManager.Instance.SetDrownObjectActive(false);
             currentHealth = Mathf.Clamp(currentHealth+1,0,maxHealth);
             ChangeGroundSprite(currentHealth);
         }

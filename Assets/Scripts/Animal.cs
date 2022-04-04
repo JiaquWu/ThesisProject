@@ -20,12 +20,16 @@ public class Animal : MonoBehaviour,IInteractable
     }
 
     void AnimalInteractCommand(InteractionType interaction,IPlaceable placeable,Vector3 animalPlacePosition) {
+        //
         Debug.Log("animal要做" + interaction);
         switch (interaction)
         {
             case InteractionType.PICK_UP_ANIMALS:
-            //如果是拿起来,首先从地图上消失,然后出现在玩家的手中,
+            //如果是拿起来,首先从地图上消失,然后出现在玩家的手中,  
             if(placeable == null) return;
+            if(LevelManager.Instance.IsPlayerEnterBoat) {//但是这里要判断玩家在不在船上,如果玩家在船上,这里要触发levelmanager的动物进入船上的方法
+                LevelManager.Instance.OnInteractableEnterBoat(this,true);
+            }
             if(placeable.GetType().Name == "Boat") {
                 //玩家无法从船上拿东西,因此这里只能是撤回发生的操作
                 GetComponent<SpriteRenderer>().enabled = false;
@@ -40,6 +44,9 @@ public class Animal : MonoBehaviour,IInteractable
             break;
             case InteractionType.PUT_DOWN_ANIMALS:
             if(placeable == null) return;//肯定不会null 只是以防万一
+            if(LevelManager.Instance.IsPlayerEnterBoat) {//但是这里要判断玩家在不在船上,如果玩家在船上,这里要触发levelmanager的动物进入船上的方法
+                LevelManager.Instance.OnInteractableEnterBoat(this,false);
+            }
             //说明是放下去
             if(placeable.GetType().Name == "Boat") {
                 //放在船上
