@@ -244,8 +244,8 @@ public class PlayerController : MonoBehaviour
     }
     void OnLevelFinish() {
         //让玩家头上的狗狗笑起来
-        Debug.Log(animalAttached.enabled);
-        if(animalAttached.enabled == true) animalAttached.sprite = happyGoldenSprite;
+        //不用判断,只要过关一定是开心的
+        animalAttached.sprite = happyGoldenSprite;
     }
     void OnPlayerDead() {
         moveInputPool.Clear();

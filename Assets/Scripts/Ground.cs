@@ -37,7 +37,12 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
             command.undoAction += ()=>LevelManager.Instance.OnPlayerEnterBoat(true);
         }
         if(temp == null) {
-            //说明玩家没有拿东西,因此没啥反应,走进来不会有,撤销也不会有
+            //说明玩家没有拿东西,因此没啥反应,走进来不会有,撤销也不会有,除了播放声音
+            if(currentHealth == 1) {//因为能走就肯定不是碎的
+                AudioManager.Instance.PlayIceBreakAudio();
+            }else {
+                AudioManager.Instance.PlayPlayerMoveAudio();
+            }
         }else {
             //玩家拿了东西,所以会掉血,图片会变,撤销的话就把血加回来,图片变回来
             command.executeAction += ()=>OnBreakingGround(true);
@@ -57,6 +62,10 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
                 //说明玩家死了
                 LevelManager.Instance.OnPlayerDeadInvoke();
                 UIManager.Instance.SetDrownObjectActive(true);
+                AudioManager.Instance.PlayPlayerDrownAudio();
+            }else {
+                //踩了之后玩家没死,图片已经变了,要播放声音
+                AudioManager.Instance.PlayIceBreakAudio();
             }
         }else {
             UIManager.Instance.SetDrownObjectActive(false);

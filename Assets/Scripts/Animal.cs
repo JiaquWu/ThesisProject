@@ -41,6 +41,8 @@ public class Animal : MonoBehaviour,IInteractable
                 isBeingHold = true;
             }
             //先这么写着,万一有变化
+            //拿起来的音效
+            AudioManager.Instance.PlayPlayerPickUpAnimalAudio();
             break;
             case InteractionType.PUT_DOWN_ANIMALS:
             if(placeable == null) return;//肯定不会null 只是以防万一
@@ -52,6 +54,7 @@ public class Animal : MonoBehaviour,IInteractable
                 //放在船上
                 GetComponent<SpriteRenderer>().enabled = false;
                 LevelManager.UnRegisterObject(gameObject);//因为这个animal完成了它的使命,所以不需要注册了
+                AudioManager.Instance.PlayplayerPutDownAnimalOnBoatAudio();
             }else {
                 //放在地面上 出现在玩家的前面一个位置  
                 gameObject.transform.position = animalPlacePosition;

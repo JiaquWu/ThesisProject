@@ -53,9 +53,11 @@ public class UIManager : SingletonManager<UIManager> {
         if(selectLevelMenuPanel != null) {
             selectLevelMenuPanel.SetActive(false);
         }       
-        Vector3 temp = Camera.main.ViewportToWorldPoint(new Vector2(0.5f,1)) + Vector3.down;
-        drownAnimObject.transform.position = new Vector3(temp.x,temp.y,0);
-        drownAnimObject.SetActive(false);
+        if(drownAnimObject != null) {
+            Vector3 temp = Camera.main.ViewportToWorldPoint(new Vector2(0.5f,1)) + Vector3.down;
+            drownAnimObject.transform.position = new Vector3(temp.x,temp.y,0);
+            drownAnimObject.SetActive(false);
+        }
 
         if(levelImage_01 == null) return;//如果这个都没有,其他应该也不会有的
         levelButtonList = new List<GameObject>();
@@ -68,18 +70,22 @@ public class UIManager : SingletonManager<UIManager> {
 
     }
     public void OnStartFirstLevelButtonClicked() {
+        AudioManager.Instance.PlayUIClickAudio();
         GameManager.Instance.LoadLevel(0);
     }
     public void OnLeftLevelButtonClicked() {
+        AudioManager.Instance.PlayUIClickAudio();
         GameManager.Instance.LoadNextOrPrevLevel(true);
     }
     public void OnRightLevelButtonClicked() {
+        AudioManager.Instance.PlayUIClickAudio();
         GameManager.Instance.LoadNextOrPrevLevel(false);
     }
     public void OnEscButtonPerformed(InputAction.CallbackContext context) {
         OnSelectLevelMenuButtonClicked();
     }
     public void OnSelectLevelMenuButtonClicked() {
+        AudioManager.Instance.PlayUIClickAudio();
         selectLevelMenuPanel.SetActive(!selectLevelMenuPanel.activeSelf);
         if(selectLevelMenuPanel.activeSelf) {      
             levelSelectPage = 0;
@@ -87,6 +93,7 @@ public class UIManager : SingletonManager<UIManager> {
         }
     }
     public void OnSelectLevelLeftAndRightButtonClicked(bool isRight) {
+        AudioManager.Instance.PlayUIClickAudio();
         levelSelectPage = isRight? levelSelectPage + 1 : levelSelectPage - 1;
         RefreshCurrentLevelPage();
     }
@@ -111,7 +118,9 @@ public class UIManager : SingletonManager<UIManager> {
                LevelData data = GameManager.Instance.LevelSequence.levels[levelSelectPage * 6 + i];//比如说第一页第二个就是0+1 
                levelButtonList[i].GetComponent<Image>().sprite = data.LevelThumbnail;
                levelButtonList[i].GetComponent<Button>().onClick.RemoveAllListeners();
-               levelButtonList[i].GetComponent<Button>().onClick.AddListener(()=>GameManager.Instance.LoadLevel(data.FileName));
+               levelButtonList[i].GetComponent<Button>().onClick.AddListener(()=> {
+                   AudioManager.Instance.PlayUIClickAudio();
+                   GameManager.Instance.LoadLevel(data.FileName);});
            }else {
                levelButtonList[i].SetActive(false);
            }

@@ -87,6 +87,7 @@ public class LevelManager : SingletonManager<LevelManager>
     void OnLevelFinish() {
         OnlevelFinish.Invoke();
         IsLevelFinished = true;
+        AudioManager.Instance.PlayplayerFinishLevelAudio();
         Debug.Log("关卡通过了");
     }
 }
