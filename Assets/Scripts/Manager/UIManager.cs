@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class UIManager : SingletonManager<UIManager> {
     [SerializeField]
+    private GameObject drownAnimObject;
+    [SerializeField]
     private GameObject leftLevelButton;
     [SerializeField]
     private GameObject rightLevelButton;
@@ -50,7 +52,11 @@ public class UIManager : SingletonManager<UIManager> {
         }
         if(selectLevelMenuPanel != null) {
             selectLevelMenuPanel.SetActive(false);
-        }
+        }       
+        Vector3 temp = Camera.main.ViewportToWorldPoint(new Vector2(0.5f,1)) + Vector3.down;
+        drownAnimObject.transform.position = new Vector3(temp.x,temp.y,0);
+        drownAnimObject.SetActive(false);
+
         if(levelImage_01 == null) return;//如果这个都没有,其他应该也不会有的
         levelButtonList = new List<GameObject>();
         levelButtonList.Add(levelImage_01.transform.GetChild(0).gameObject);
@@ -105,5 +111,9 @@ public class UIManager : SingletonManager<UIManager> {
            levelButtonList[i].GetComponent<Button>().onClick.RemoveAllListeners();
            levelButtonList[i].GetComponent<Button>().onClick.AddListener(()=>GameManager.Instance.LoadLevel(data.FileName));
        }
+    }
+
+    public void SetDrownObjectActive(bool b) {
+        drownAnimObject.SetActive(b);
     }
 }
