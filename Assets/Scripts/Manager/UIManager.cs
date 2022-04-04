@@ -92,7 +92,8 @@ public class UIManager : SingletonManager<UIManager> {
     }
     private void RefreshCurrentLevelPage() {
        if(GameManager.Instance.LevelSequence == null || GameManager.Instance.LevelSequence.levels.Count == 0) Debug.LogError("no levelSequce or level");
-       int maxPages = Mathf.CeilToInt(GameManager.Instance.LevelSequence.levels.Count / 6) - 1;//因为0是第一页
+       int maxPages = Mathf.CeilToInt(GameManager.Instance.LevelSequence.levels.Count / 6f) - 1;//因为0是第一页
+       Debug.Log(GameManager.Instance.LevelSequence.levels.Count/6f);
        selectLevelLeftButton.SetActive(levelSelectPage != 0);
        selectLevelRightButton.SetActive(levelSelectPage != maxPages);
        //知道了当前第几页,那么那六个图片分别要显示指定的关卡缩略图,六个按钮要绑定选择加载对应关卡的方法
@@ -103,13 +104,17 @@ public class UIManager : SingletonManager<UIManager> {
        }else {
            activeObjectCount = 6;
        }
-       for (int i = 0; i < activeObjectCount; i++) {
-           levelButtonList[i].SetActive(true);
-           //然后是换图片和挂事件
-           LevelData data = GameManager.Instance.LevelSequence.levels[levelSelectPage * 6 + i];//比如说第一页第二个就是0+1 
-           levelButtonList[i].GetComponent<Image>().sprite = data.LevelThumbnail;
-           levelButtonList[i].GetComponent<Button>().onClick.RemoveAllListeners();
-           levelButtonList[i].GetComponent<Button>().onClick.AddListener(()=>GameManager.Instance.LoadLevel(data.FileName));
+       for (int i = 0; i < levelButtonList.Count; i++) {
+           if(i<activeObjectCount) {
+               levelButtonList[i].SetActive(true);
+               //然后是换图片和挂事件
+               LevelData data = GameManager.Instance.LevelSequence.levels[levelSelectPage * 6 + i];//比如说第一页第二个就是0+1 
+               levelButtonList[i].GetComponent<Image>().sprite = data.LevelThumbnail;
+               levelButtonList[i].GetComponent<Button>().onClick.RemoveAllListeners();
+               levelButtonList[i].GetComponent<Button>().onClick.AddListener(()=>GameManager.Instance.LoadLevel(data.FileName));
+           }else {
+               levelButtonList[i].SetActive(false);
+           }
        }
     }
 
