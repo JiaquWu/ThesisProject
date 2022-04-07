@@ -18,7 +18,8 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
         ChangeGroundSprite(currentHealth);
     }
     public bool IsPassable(Direction dir) {
-        return currentHealth != 0;
+        return true;
+        //return currentHealth != 0;
         //可能会存在单行道
     }
     public bool IsPlaceable() {
@@ -37,11 +38,14 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
             command.undoAction += ()=>LevelManager.Instance.OnPlayerEnterBoat(true);
         }
         if(temp == null) {
-            //说明玩家没有拿东西,因此没啥反应,走进来不会有,撤销也不会有,除了播放声音
-            if(currentHealth == 1) {//因为能走就肯定不是碎的
+            if(currentHealth == 2) {
+                AudioManager.Instance.PlayPlayerMoveAudio();
+            }else if(currentHealth == 1) {//因为能走就肯定不是碎的
                 AudioManager.Instance.PlayIceBreakAudio();
             }else {
-                AudioManager.Instance.PlayPlayerMoveAudio();
+                //如果有一滴血或者两滴血说明路是能走的,所以不会发生什么,但是没血的玩家走上去就淹死了
+                command.executeAction += ()=>OnPlayerEnterBrokenGround(true);
+                command.undoAction += ()=>OnPlayerEnterBrokenGround(false);
             }
         }else {
             //玩家拿了东西,所以会掉血,图片会变,撤销的话就把血加回来,图片变回来
@@ -53,6 +57,16 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
     public void OnPlayerPlace(IInteractable player,ref Command command) {
 
     }
+    private void OnPlayerEnterBrokenGround(bool b) {
+        //玩家淹死触发的事情
+        if(b) {
+            LevelManager.Instance.OnPlayerDeadInvoke();
+            UIManager.Instance.SetDrownObjectActive(true);
+            AudioManager.Instance.PlayPlayerDrownAudio();
+        }else {
+            UIManager.Instance.SetDrownObjectActive(false);
+        }
+    }
 
     public void OnBreakingGround(bool b) {//true就是说是掉血
         if(b) {
@@ -60,15 +74,13 @@ public class Ground :MonoBehaviour, IPassable,IPlaceable {
             ChangeGroundSprite(currentHealth);
             if(currentHealth <= 0) {
                 //说明玩家死了
-                LevelManager.Instance.OnPlayerDeadInvoke();
-                UIManager.Instance.SetDrownObjectActive(true);
-                AudioManager.Instance.PlayPlayerDrownAudio();
+                OnPlayerEnterBrokenGround(b);
             }else {
                 //踩了之后玩家没死,图片已经变了,要播放声音
                 AudioManager.Instance.PlayIceBreakAudio();
             }
         }else {
-            UIManager.Instance.SetDrownObjectActive(false);
+            OnPlayerEnterBrokenGround(b);
             currentHealth = Mathf.Clamp(currentHealth+1,0,maxHealth);
             ChangeGroundSprite(currentHealth);
         }
