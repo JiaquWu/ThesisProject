@@ -14,5 +14,8 @@ public class LevelData : ScriptableObject {
     [SerializeField]
     private Sprite levelThumbnail;
     public Sprite LevelThumbnail => levelThumbnail;
+    [SerializeField]
+    private Sprite levelIndicateImage;
+    public Sprite LevelIndicateImage => levelIndicateImage;
     
 }

@@ -29,6 +29,8 @@ public class UIManager : SingletonManager<UIManager> {
     private GameObject levelImage_05;
     [SerializeField]
     private GameObject levelImage_06;
+    [SerializeField]
+    private GameObject levelIndicateImage;
     private List<GameObject> levelButtonList;
     private int levelSelectPage;//选关界面页数,默认是第0页
 
@@ -52,6 +54,14 @@ public class UIManager : SingletonManager<UIManager> {
         }
         if(selectLevelMenuPanel != null) {
             selectLevelMenuPanel.SetActive(false);
+        }
+        if(levelIndicateImage != null) {         
+            if(GameManager.Instance.GetCurrentLevelIndex() != -1) {
+                Debug.Log(GameManager.Instance.LevelSequence.levels[GameManager.Instance.GetCurrentLevelIndex()].LevelIndicateImage);
+                levelIndicateImage.GetComponent<Image>().sprite = 
+                GameManager.Instance.LevelSequence.levels[GameManager.Instance.GetCurrentLevelIndex()].LevelIndicateImage;
+            }
+            levelIndicateImage.SetActive(levelIndicateImage.GetComponent<Image>().sprite != null);    
         }       
         if(drownAnimObject != null) {
             Vector3 temp = Camera.main.ViewportToWorldPoint(new Vector2(0.5f,1)) + Vector3.down;

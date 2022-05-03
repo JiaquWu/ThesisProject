@@ -15,3 +15,4 @@ MonoBehaviour:
   fileName: level_12
   levelName: "\u5173\u536112"
   levelThumbnail: {fileID: 21300000, guid: 2b855fcb9de6d8d4d97fa0f7e4584b87, type: 3}
+  levelIndicateImage: {fileID: 21300000, guid: f95ed6bcb585fe848bbe7fb6c59193a1, type: 3}
