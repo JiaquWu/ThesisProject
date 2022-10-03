@@ -69,17 +69,13 @@ public class TileManager : SingletonManager<TileManager>
             switch (tile.CurrentTileState)
             {
                 case TileState.CHARACTER:
-                Debug.Log("让主角在这里");
                 currentTile = tile;
                 break;
                 case TileState.ANIMAL:
-                Debug.Log("让动物在这里");
                 break;
                 case TileState.OBSTACLE:
-                Debug.Log("让石头在这里");
                 break;
                 case TileState.DESTINATION:
-                Debug.Log("让终点在这里");
                 break;
                 case TileState.NORMAL:
                 Debug.Log(allTilesInCurrentLevel[i].GetComponent<Tile>()?.TileHealth);
@@ -112,23 +108,19 @@ public class TileManager : SingletonManager<TileManager>
         return null;
     }
     void TryToMove(Direction dir) {
-        
-        //处理地图逻辑之类的东西
+
         if(currentDirection != dir) {
-            RotateAction.Invoke(currentDirection,dir);//玩家转向目标方向                         
+            RotateAction.Invoke(currentDirection,dir);                
             return;
         }
 
         if(currentTile.CurrentTileState == TileState.CHARACTER_WITH_ANIMAL) {
-            //格子融化一些
             if(currentTile.ReduceTileHealth()) {
                 currentTile.ChangeCurrentTileState(TileState.NORMAL);
             }else {
                 currentTile.ChangeCurrentTileState(TileState.BROKEN);
             }
         }
-        
-        Debug.Log("处理地图逻辑之类的东西");
         GameObject go = GetNextTileByDir(currentTile, dir);
         if(go != null) {
             Tile tile = go.GetComponent<Tile>();
@@ -139,11 +131,9 @@ public class TileManager : SingletonManager<TileManager>
             }
             //go.GetComponent<Tile>().CurrentTileState
         }
-        //MoveAction.Invoke(); 前提是有路可走
     }
     void TryToInteract() {
         Debug.Log("tilemanager interact");
-        //如果前面能走 判断何种交互类型
         InteractAction.Invoke(InteractionType.PICK_UP_ANIMALS);
 
     }
@@ -176,17 +166,13 @@ public class TileManager : SingletonManager<TileManager>
         command.Execute();
     }
     void TileUndoCommand() {
-        Debug.Log("TileUndo");
     }
 
     void TileRotateCommand(Direction startDir, Direction targetDir) {
         currentDirection = targetDir;
-        Debug.Log("转向" + targetDir);
     }
     void TileMoveCommand(Direction dir) {
-        Debug.Log("走了一部" + currentTile.Coordinate);
     }
     void TileInteractCommand(InteractionType interaction) {
-        Debug.Log("交互了" + interaction);
     }
 }

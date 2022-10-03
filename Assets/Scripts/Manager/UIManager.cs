@@ -32,13 +32,13 @@ public class UIManager : SingletonManager<UIManager> {
     [SerializeField]
     private GameObject levelIndicateImage;
     private List<GameObject> levelButtonList;
-    private int levelSelectPage;//选关界面页数,默认是第0页
+    private int levelSelectPage;
 
     private IA_Main uiInputAction;
     private void OnEnable() {
         uiInputAction = new IA_Main();
         uiInputAction.Enable();
-        uiInputAction.UI.Esc.performed += OnEscButtonPerformed;//这么写显然是不对的,但是目前只有这一个UI
+        uiInputAction.UI.Esc.performed += OnEscButtonPerformed;
     }
     private void OnDisable() {
 
@@ -69,7 +69,7 @@ public class UIManager : SingletonManager<UIManager> {
             drownAnimObject.SetActive(false);
         }
 
-        if(levelImage_01 == null) return;//如果这个都没有,其他应该也不会有的
+        if(levelImage_01 == null) return;
         levelButtonList = new List<GameObject>();
         levelButtonList.Add(levelImage_01.transform.GetChild(0).gameObject);
         levelButtonList.Add(levelImage_02.transform.GetChild(0).gameObject);
@@ -109,14 +109,12 @@ public class UIManager : SingletonManager<UIManager> {
     }
     private void RefreshCurrentLevelPage() {
        if(GameManager.Instance.LevelSequence == null || GameManager.Instance.LevelSequence.levels.Count == 0) Debug.LogError("no levelSequce or level");
-       int maxPages = Mathf.CeilToInt(GameManager.Instance.LevelSequence.levels.Count / 6f) - 1;//因为0是第一页
+       int maxPages = Mathf.CeilToInt(GameManager.Instance.LevelSequence.levels.Count / 6f) - 1;
        Debug.Log(GameManager.Instance.LevelSequence.levels.Count/6f);
        selectLevelLeftButton.SetActive(levelSelectPage != 0);
        selectLevelRightButton.SetActive(levelSelectPage != maxPages);
-       //知道了当前第几页,那么那六个图片分别要显示指定的关卡缩略图,六个按钮要绑定选择加载对应关卡的方法
-       //首先要显示几个呢?因为不知道上次开关了几个,所以每次刷新都要重新加载每一个的状态
        int activeObjectCount = 0;
-       if(levelSelectPage == maxPages && GameManager.Instance.LevelSequence.levels.Count % 6 != 0) {//只有在最后一页并且不是6的整数才是别的数
+       if(levelSelectPage == maxPages && GameManager.Instance.LevelSequence.levels.Count % 6 != 0) {
           activeObjectCount = GameManager.Instance.LevelSequence.levels.Count % 6;
        }else {
            activeObjectCount = 6;
@@ -124,8 +122,7 @@ public class UIManager : SingletonManager<UIManager> {
        for (int i = 0; i < levelButtonList.Count; i++) {
            if(i<activeObjectCount) {
                levelButtonList[i].SetActive(true);
-               //然后是换图片和挂事件
-               LevelData data = GameManager.Instance.LevelSequence.levels[levelSelectPage * 6 + i];//比如说第一页第二个就是0+1 
+               LevelData data = GameManager.Instance.LevelSequence.levels[levelSelectPage * 6 + i];
                levelButtonList[i].GetComponent<Image>().sprite = data.LevelThumbnail;
                levelButtonList[i].GetComponent<Button>().onClick.RemoveAllListeners();
                levelButtonList[i].GetComponent<Button>().onClick.AddListener(()=> {

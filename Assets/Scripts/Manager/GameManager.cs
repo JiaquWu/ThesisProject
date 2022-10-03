@@ -24,7 +24,7 @@ public class GameManager : SingletonManager<GameManager> {
     private void Awake() {
         levelSequence = Resources.Load<LevelSequence>("LevelSequence_01");
         if(levelSequence == null) {
-            Debug.LogError("no such levelSequence");//这样后面的方法就不用检测了
+            Debug.LogError("no such levelSequence");
         }
         DontDestroyOnLoad(gameObject);
     }
@@ -35,7 +35,7 @@ public class GameManager : SingletonManager<GameManager> {
                 return i;
             }
         }
-        return -1;//说明当前关卡在list里面找不到,somehow
+        return -1;
     }
     public void LoadLevel(int levelIndex) {
         if(levelSequence.levels.Count <= levelIndex) {

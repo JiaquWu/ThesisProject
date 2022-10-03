@@ -14,8 +14,8 @@ public class LevelManager : SingletonManager<LevelManager>
     private void Awake() {
         commandHandler = new CommandHandler();
     }
-    List<GameObject> levelObjects = new List<GameObject>();//当前level中占位置的所有object,被玩家拿着的不算
-    List<IInteractable> levelGoals = new List<IInteractable>();//这关需要搬的东西
+    List<GameObject> levelObjects = new List<GameObject>();
+    List<IInteractable> levelGoals = new List<IInteractable>();
 
     private void OnDisable() {
         Instance.levelObjects.Clear();
@@ -53,14 +53,11 @@ public class LevelManager : SingletonManager<LevelManager>
         if(IsPlayerDead) IsPlayerDead = false;
     }
     public void OnPlayerDeadInvoke() {
-        //玩家死了之后会发生的事情,比如说显示UI,播放声音
         OnPlayerDead.Invoke();
         IsPlayerDead = true;
-        Debug.Log("玩家死辣");
     }
     public void OnPlayerEnterBoat(bool isEntering) {
         if(isEntering) {
-            //说明玩家进来了,要判断还没有搬的东西,如果没有说明过关了
             IsPlayerEnterBoat = true;
             if(levelGoals.Count == 0) {
                 OnLevelFinish();
@@ -71,10 +68,9 @@ public class LevelManager : SingletonManager<LevelManager>
     }
     public void OnInteractableEnterBoat(IInteractable interactable,bool isEntering) {
         if(isEntering) {
-            //说明动物进来了
             if(levelGoals.Contains(interactable)) {
                 levelGoals.Remove(interactable);
-                if(levelGoals.Count == 0 && IsPlayerEnterBoat) {//这里理论上不用判断两次,但是不确定哪个方法先执行,所以这样保险,而且由于IsPlayerEnterBoat变了
+                if(levelGoals.Count == 0 && IsPlayerEnterBoat) {
                     OnLevelFinish();
                 }
             }
@@ -88,6 +84,5 @@ public class LevelManager : SingletonManager<LevelManager>
         OnlevelFinish.Invoke();
         IsLevelFinished = true;
         AudioManager.Instance.PlayplayerFinishLevelAudio();
-        Debug.Log("关卡通过了");
     }
 }

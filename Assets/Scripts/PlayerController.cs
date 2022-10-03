@@ -81,61 +81,49 @@ public class PlayerController : MonoBehaviour
     void OnMoveUpPerformed(InputAction.CallbackContext context) {
         if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return;
         if (context.ReadValueAsButton()) {
-            // 按下
             if (!moveInputPool.Contains(Direction.UP)) {
                 moveInputPool.Add(Direction.UP);
-                //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
         }else {
-            // 抬起
             moveInputPool.Remove(Direction.UP);
         }
     }
     void OnMoveLeftPerformed(InputAction.CallbackContext context) {
         if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return; 
         if (context.ReadValueAsButton()) {
-            // 按下
             if (!moveInputPool.Contains(Direction.LEFT)) {
                 moveInputPool.Add(Direction.LEFT);
-                //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
         }else {
-            // 抬起
             moveInputPool.Remove(Direction.LEFT);
         }    
     }
     void OnMoveDownPerformed(InputAction.CallbackContext context) {
         if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return;    
         if (context.ReadValueAsButton()) {
-            // 按下
             if (!moveInputPool.Contains(Direction.DOWN)) {
                 moveInputPool.Add(Direction.DOWN);
-                //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
         } 
         else {
-            // 抬起
             moveInputPool.Remove(Direction.DOWN);
         }    
     }
     void OnMoveRightPerformed(InputAction.CallbackContext context) {
         if(LevelManager.Instance.IsPlayerDead || LevelManager.Instance.IsLevelFinished) return;         
         if (context.ReadValueAsButton()) {
-            // 按下
             if (!moveInputPool.Contains(Direction.RIGHT)) {
                 moveInputPool.Add(Direction.RIGHT);
-                //瞬间执行一次
                 if(processMoveInputCoroutine != null) StopCoroutine(processMoveInputCoroutine);
                 processMoveInputCoroutine = StartCoroutine(ProcessMoveInput());
             }
         }else {
-            // 抬起
             moveInputPool.Remove(Direction.RIGHT);
         }  
     }
@@ -149,12 +137,7 @@ public class PlayerController : MonoBehaviour
         CharacterUndoCommand();          
     }
     void OnCharacterMoveInput(Direction dir) {
-        //
         if(dir == CharacterDirection) {
-            //移动
-            // Command command = new Command(()=>CharacterMoveCommand(dir),()=>CharacterMoveCommand(Utilitys.ReverseDirection(dir)));
-            // characterCommands.Push(command);
-            // command.Execute();
             if(!IsPassable(dir)) return;
             List<IPassable> objects = LevelManager.GetInterfaceOn<IPassable>(Utilities.DirectionToVector(dir) + transform.position);
             Command command = new Command();
@@ -167,17 +150,14 @@ public class PlayerController : MonoBehaviour
         }else {
             Direction temp = CharacterDirection;
             Command command = new Command(()=>CharacterRotateCommand(dir),()=>CharacterRotateCommand(temp));
-            LevelManager.Instance.commandHandler.AddCommand(command);  
-            //转向        
+            LevelManager.Instance.commandHandler.AddCommand(command);         
         }  
     }
     void OnCharacterInteractInput() { 
         InteractionType interaction = InteractionType.NONE;
         Command command = new Command();
-        Debug.Log("当前动物是"+InteractableCharacterHold);
         if(InteractableCharacterHold != null) {
             if(IsPlaceable(out IPlaceable placeable)) {  
-                //手中的动物放在当前的格子
                 IInteractable temp = InteractableCharacterHold;
                 interaction = InteractionType.PUT_DOWN_ANIMALS;
                 command.executeAction += ()=>CharacterInteractCommand(interaction,temp);
@@ -193,32 +173,27 @@ public class PlayerController : MonoBehaviour
             if(!IsInteractable()) return;
             interaction = InteractionType.PICK_UP_ANIMALS;
             List<IPlaceable> placeables = LevelManager.GetInterfaceOn<IPlaceable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
-            IPlaceable temp = placeables[0];//这里是要获取主角要交互物体前面的地面是什么 普通地面还是船
+            IPlaceable temp = placeables[0];
             List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>((Utilities.DirectionToVector(CharacterDirection)) + transform.position);
             foreach (var item in objects) {
                 item.OnPlayerInteract(interaction,temp,gameObject,ref command);             
             }
             command.executeAction += ()=>CharacterInteractCommand(interaction,objects[0]);
             command.undoAction += ()=>CharacterInteractCommand(Utilities.ReverseInteractionType(interaction),objects[0]);
-            //前面已经检验过了,objects如果一个元素都没有就return了,但是如果有两个可以interact的物体还是会出问题
-            //这里还有一件事要做,就是玩家拿起来的时候实际上会把地板压一下
             List<Ground> grounds = LevelManager.GetInterfaceOn<Ground>(transform.position);
             foreach (var item in grounds) {
                command.executeAction += ()=>item.OnBreakingGround(true);
-               command.undoAction += ()=>item.OnBreakingGround(false);//这里的true可以看objects[0]具体是什么动物
+               command.undoAction += ()=>item.OnBreakingGround(false);
             }
             LevelManager.Instance.commandHandler.AddCommand(command);
         }  
     }
     void CharacterRotateCommand(Direction targetDir) {
-        //玩家从之前的朝向转向新的朝向
         CharacterDirection = targetDir;
         if(!TryGetComponent<SpriteRenderer>(out SpriteRenderer renderer) || !characterSpritesDic.TryGetValue(targetDir, out Sprite sprite))  return;
         renderer.sprite = sprite;
-        //改变方向
     }
     void CharacterMoveCommand(Direction dir) {
-        //玩家说了算
         transform.position = Utilities.Vector3ToVector3Int(Utilities.DirectionToVector(dir) + transform.position);
         CharacterPosition = transform.position;
     }
@@ -226,25 +201,20 @@ public class PlayerController : MonoBehaviour
         switch (interaction) {
             case InteractionType.PICK_UP_ANIMALS:
             InteractableCharacterHold = interactableItem;
-            //如果是拿起动物就让玩家头上显示狗狗
             animalAttached.enabled = true;
             break;
             case InteractionType.PUT_DOWN_ANIMALS:
             InteractableCharacterHold = null;
-            //如果是放下就让这个狗狗不显示
             animalAttached.enabled = false;
             break;
         }
     }
     void CharacterUndoCommand() {
        if(!LevelManager.Instance.commandHandler.Undo()) {
-           Debug.Log("无销可撤");
+           
        }
-       Debug.Log("当前动物是"+InteractableCharacterHold);
     }
     void OnLevelFinish() {
-        //让玩家头上的狗狗笑起来
-        //不用判断,只要过关一定是开心的
         animalAttached.sprite = happyGoldenSprite;
     }
     void OnPlayerDead() {
@@ -254,12 +224,12 @@ public class PlayerController : MonoBehaviour
         List<GameObject> objects = LevelManager.GetObjectsOn(Utilities.DirectionToVector(dir) + transform.position);
         if(objects.Count == 0) return false;
         foreach (var item in objects) {
-           if(!item.TryGetComponent<IPassable>(out IPassable passable)) return false;//如果有一个没有这个接口那就不能通过
-           if(!passable.IsPassable(dir)) return false;//
+           if(!item.TryGetComponent<IPassable>(out IPassable passable)) return false;
+           if(!passable.IsPassable(dir)) return false;
         }
         return true;
     }
-    bool IsPlaceable(out IPlaceable placeable) {//放置应该不需要判断方向,一个地方能不能放东西,还要判断这个地方没有其他东西
+    bool IsPlaceable(out IPlaceable placeable) {
         IPlaceable temp = null;
         List<GameObject> objects = LevelManager.GetObjectsOn(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) {
@@ -271,9 +241,8 @@ public class PlayerController : MonoBehaviour
                 placeable = null;
                 return false;
             }else if(place.IsPlaceable()){
-                temp = place;//一个地方最多有一个iplaceable,所以不会替换
+                temp = place;
             }else {
-                //说明放不了
                 placeable = null;
                 return false;
             }
@@ -282,8 +251,7 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
-    bool IsInteractable() {
-        //有一个能交互的就行   
+    bool IsInteractable() { 
         List<IInteractable> objects = LevelManager.GetInterfaceOn<IInteractable>(Utilities.DirectionToVector(CharacterDirection) + transform.position);
         if(objects.Count == 0) return false;
         foreach (var item in objects) {

@@ -4,11 +4,11 @@ using UnityEngine;
 [CreateAssetMenu(menuName ="Level/Data",fileName ="LevelData", order = 0)]
 public class LevelData : ScriptableObject {
     [SerializeField]
-    private string fileName;//关卡文件的名字,也就是场景的名字
+    private string fileName;
     public string FileName => fileName;
 
     [SerializeField]
-    private string levelName;//自己的名字
+    private string levelName;
     public string LevelName => LevelName;
 
     [SerializeField]
